@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Project_Nemesis__HighDimensionalClustering
+namespace Chaos
 {
     class Program
     {
@@ -9,4 +9,6 @@ namespace Project_Nemesis__HighDimensionalClustering
             Console.WriteLine("Hello World!");
         }
     }
+
+
 }
