@@ -24,6 +24,11 @@ namespace MyDatastructure.UnionFind
         protected int Size;
 
         /// <summary>
+        /// The number of distinct sets there are after merging. 
+        /// </summary>
+        protected int disjointset_count;
+
+        /// <summary>
         /// Create an instance of ArrayDisjointset.
         /// </summary>
         public ArrayDisjointSet()
@@ -50,6 +55,8 @@ namespace MyDatastructure.UnionFind
             Forest[Size + 1] = 0;
             IndexMap[a] = Size + 1;
             Size++;
+
+            disjointset_count++; 
         }
 
         /// <summary>
@@ -143,6 +150,9 @@ namespace MyDatastructure.UnionFind
                 return;
             }
             Forest[rootindexA] = rootindexB;
+            
+            
+            disjointset_count--; // UNDONE: regression notes. 
         }
 
         /// <summary>
@@ -168,6 +178,12 @@ namespace MyDatastructure.UnionFind
         public int GetRepresentative(T a)
         {
             return FindSet(a);
+        }
+
+
+        public int DisjointSetCount() 
+        {
+            throw new NotImplementedException();
         }
     }
 }

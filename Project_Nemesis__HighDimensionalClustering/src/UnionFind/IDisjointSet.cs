@@ -55,5 +55,14 @@ namespace MyDatastructure.UnionFind
         /// <returns></returns>
         int GetRepresentative(T a);
 
+        /// <summary>
+        /// Function returns an integer representing the number of 
+        /// disjoint sets that are in the datastructure. 
+        /// </summary>
+        /// <returns>
+        /// an integer. 
+        /// </returns>
+        int DisjointSetCount();
+
     }
 }
