@@ -13,6 +13,9 @@ namespace Chaos.src.Util
     /// </summary>
     public class Basic
     {
+
+        public static bool Verbalize = false;
+
         private Basic()
         {
             // Don't use instances. 
@@ -41,7 +44,7 @@ namespace Chaos.src.Util
                 }
                 else if (cc == ' ')
                 {
-                    if (charStream.Count == 0 || charStream[charStream.Count - 1] == ' ')
+                    if (charStream.Count == 0 || charStream[charStream.Count - 1] != ' ')
                         charStream.Add(cc);
                 }
                 else; // empty. 
@@ -55,11 +58,11 @@ namespace Chaos.src.Util
         /// <param name="Directory">
         /// </param>
         /// <returns></returns>
-        public static IDictionary<String, String> GetContentForAllFiles(String Directory)
+        public static IDictionary<String, String> GetContentForAllFiles(String Directory, bool recursive = false)
         {
             DirectoryInfo dirInfo = new DirectoryInfo(Directory);
             if (!dirInfo.Exists) return null;
-            FileInfo[] files = dirInfo.GetFiles();
+            FileInfo[] files = recursive? ListFilesRecur(Directory):dirInfo.GetFiles();
             IDictionary<String, String> content = new SortedDictionary<String, String>();
             try 
             {
@@ -80,6 +83,33 @@ namespace Chaos.src.Util
             }
             return content;
         }
+
+        static FileInfo[] ListFilesRecur(string dir)
+        {
+            List<FileInfo> fileinfo = new List<FileInfo>();
+            ListFilesRecursive_P1(new DirectoryInfo(dir), fileinfo);
+            FileInfo[] res = fileinfo.ToArray();
+            return res;
+        }
+
+        /// <summary>
+        /// Get all the files under all subdirectory. 
+        /// </summary>
+        /// <param name="Directory"></param>
+        /// <returns></returns>
+        static void ListFilesRecursive_P1(DirectoryInfo Directory, IList<FileInfo> bucket)
+        {
+            foreach (FileInfo fi in Directory.GetFiles())
+            {
+                bucket.Add(fi);
+            }
+            foreach (DirectoryInfo di in Directory.GetDirectories())
+            {
+                ListFilesRecursive_P1(di, bucket); 
+            }
+        }
+
+
         /// <summary>
         /// The string is unprocseed file, 
         /// how it will be filtered or configured is not depended 
@@ -95,8 +125,8 @@ namespace Chaos.src.Util
             for(int I = 1; I < charList.Count; I++)
             {
                 char c1 = charList[I - 1], c2 = charList[I]; 
-                int row = c1 == ' '? 27: c1 - 'a';
-                int col = c2 == ' ' ? 27 : c2 - 'a';
+                int row = c1 == ' '? 26: c1 - 'a';
+                int col = c2 == ' ' ? 26 : c2 - 'a';
                 res[row, col] += 1;
             }
 
@@ -108,10 +138,11 @@ namespace Chaos.src.Util
         {
             double sum = 0;
             for (int I = 0; I < a.GetLength(0); I++)
-                for (int J = 0; J < a.GetLength(1); J++)
-                {
-                    sum += Math.Pow(a[I, J] - b[I, J], 2.0);
-                }
+            for (int J = 0; J < a.GetLength(1); J++)
+            {
+                sum += Math.Pow(a[I, J] - b[I, J], 2.0);
+            }
+
             return Math.Sqrt(sum); // TODO: TEST THIS
         }
 
@@ -132,6 +163,12 @@ namespace Chaos.src.Util
                 }
             }
             return res;
+        }
+
+
+        public static void Println(object o)
+        {
+            Console.WriteLine(o);
         }
     }
 }

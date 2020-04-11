@@ -8,12 +8,13 @@ namespace Chaos.src.Ethena
 {
     /// <summary>
     /// Text and the transition matrices generated from the text. 
+    /// * Everything should be setted when the thing is initialized. 
     /// </summary>
     public class TextAnalysis
     {
-        protected string file_name; 
-        protected string content;
-        protected double[,] transition_matrix; 
+        public string file_name { get; protected set; } 
+        public string content { get; protected set; }
+        public double[,] transition_matrix { get; protected set; } 
 
         /// <summary>
         /// Establish the content of the document 
@@ -22,7 +23,7 @@ namespace Chaos.src.Ethena
         /// * Type of distance depends on settings manager. 
         /// </summary>
         /// <param name="content">
-        /// A string
+        /// A string, raw. 
         /// </param>
         /// <param name="name">
         /// A name for the text analysis instance. 
@@ -30,6 +31,7 @@ namespace Chaos.src.Ethena
         public TextAnalysis(string content, string name)
         {
             this.content = content;
+            this.file_name = name;
             Util.MatrixGenFxn MgenFxn = DisPatchMatrixGenFxn();
             transition_matrix = MgenFxn(content);
         }
@@ -53,14 +55,14 @@ namespace Chaos.src.Ethena
 
             string res = $"Instance Type: TextAnalysis; Insance Name: {this.file_name}\n";
             res += "==========================================================\n";
-            res += "Transition Matrix: ";
+            res += "Transition Matrix:\n";
             res += "==========================================================\n";
             StringBuilder sb = new StringBuilder();
             for (int I = 0; I < transition_matrix.GetLength(0); I++)
             {
                 for (int J = 0; J < transition_matrix.GetLength(1); J++)
                 {
-                    sb.Append(transition_matrix[I, J].ToString("{0.e3}") + " "); 
+                    sb.Append(String.Format("{0:0.00E+0}", transition_matrix[I, J]) + " "); 
                 }
                 sb.Append("\n");
             }
