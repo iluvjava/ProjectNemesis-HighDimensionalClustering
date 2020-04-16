@@ -64,5 +64,6 @@ namespace MyDatastructure.UnionFind
         /// </returns>
         int DisjointSetCount();
 
+      
     }
 }

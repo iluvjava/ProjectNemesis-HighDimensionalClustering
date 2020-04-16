@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
 using static Chaos.src.Util.SettingsManager;
+ 
 
 namespace Chaos.src.Ethena
 {
@@ -10,7 +11,7 @@ namespace Chaos.src.Ethena
     /// Text and the transition matrices generated from the text. 
     /// * Everything should be setted when the thing is initialized. 
     /// </summary>
-    public class TextAnalysis
+    public class TextAnalysis: Point
     {
         public string file_name { get; protected set; } 
         public string content { get; protected set; }
@@ -51,7 +52,8 @@ namespace Chaos.src.Ethena
         override 
         public string ToString()
         {
-            // String formatting: https://docs.microsoft.com/en-us/dotnet/standard/base-types/standard-numeric-format-strings
+            // String formatting:
+            // https://docs.microsoft.com/en-us/dotnet/standard/base-types/standard-numeric-format-strings
 
             string res = $"Instance Type: TextAnalysis; Insance Name: {this.file_name}\n";
             res += "==========================================================\n";

@@ -41,6 +41,7 @@ namespace Guardian
         }
 
         [TestCase("abcd ")]
+        [TestCase("aabcdefghiJKLMn  ''      ")]
         public void TestGetTM27(string stuff)
         {
             double[,] m = GetTM27(stuff);
@@ -55,15 +56,28 @@ namespace Guardian
             }
         }
 
-
         //TODO: TEST THIS
         /// <summary>
         /// Make sure the matrix distance is well defined for this .
         /// </summary>
         [Test]
         public void TestMatrix2Norm()
-        { 
-        
+        {
+            double[,] matrixA = new double[2, 2];
+            matrixA[0, 0] = 1;
+            matrixA[0, 1] = -1;
+            matrixA[1, 0] = 0;
+            matrixA[1, 1] = 0;
+            double[,] matrixB = new double[2, 2];
+            matrixB[0, 0] = 1;
+            matrixB[0, 1] = -1;
+            matrixB[1, 0] = 2;
+            matrixB[1, 1] = -1;
+            double dis = Matrix2NormDistance(matrixA, matrixB);
+            if (Math.Abs(dis- Math.Sqrt(5)) >= 10e-8)
+            {
+                throw new Exception($"Something is wrong: expect{Math.Sqrt(5)} but {dis}");
+            }
         }
 
 

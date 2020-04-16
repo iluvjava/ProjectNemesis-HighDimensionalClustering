@@ -25,6 +25,8 @@ namespace Chaos.src.Util
     /// </summary>
     public class SettingsManager
     {
+
+
         private SettingsManager()
         {
 
@@ -49,6 +51,21 @@ namespace Chaos.src.Util
             return TwoNorm;
         }
 
+
+
+    }
+
+
+    public enum MatrixMetric 
+    {
+        TwoNorm,
+        VecOneNorm,
+    }
+
+    public enum MatrixType
+    { 
+        Tm27, 
+        SecondOrder27, 
     }
 
 

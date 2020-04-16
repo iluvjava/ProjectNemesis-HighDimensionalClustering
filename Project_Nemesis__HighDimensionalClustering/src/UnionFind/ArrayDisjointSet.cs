@@ -60,13 +60,13 @@ namespace MyDatastructure.UnionFind
         }
 
         /// <summary>
-        /// Find a set this object belongs to. 
+        ///     Find a set this object belongs to. 
         /// </summary>
         /// <param name="a">
-        /// The set object. 
+        ///     The set object. 
         /// </param>
         /// <returns>
-        /// An integer representative of the set it is belonged to. 
+        ///     An integer representative of the set it is belonged to. 
         /// </returns>
         public int FindSet(T a)
         {
@@ -180,10 +180,16 @@ namespace MyDatastructure.UnionFind
             return FindSet(a);
         }
 
-
+        //TODO: IMPLEMENT THIS SHIT
         public int DisjointSetCount() 
         {
             throw new NotImplementedException();
+        }
+
+        //TODO: IMPLEMENT THIS SHIT. 
+        public IDisjointSet<T> DeepCopy()
+        {
+            return null; 
         }
     }
 }
