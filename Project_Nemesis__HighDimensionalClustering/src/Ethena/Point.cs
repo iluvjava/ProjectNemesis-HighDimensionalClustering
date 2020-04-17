@@ -48,6 +48,7 @@ namespace Chaos.src.Ethena
 
     /// <summary>
     /// This class is really for test full graph, that is all. 
+    /// But it's important cause debugging on matrix dimension is almost impossible. 
     /// </summary>
     public class SpacialPoint : Point
     {
@@ -90,12 +91,12 @@ namespace Chaos.src.Ethena
 
         public override string ToString()
         {
-            StringBuilder sb = new StringBuilder("[");
+            StringBuilder sb = new StringBuilder("(");
             for (int I = 0; I < coord.Length - 1; I++)
             {
                 sb.Append(coord[I] + ", ");
             }
-            sb.Append(coord[coord.Length - 1] + "]");
+            sb.Append(coord[coord.Length - 1] + ")");
             return sb.ToString();
         }
 

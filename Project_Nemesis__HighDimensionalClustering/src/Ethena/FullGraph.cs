@@ -8,12 +8,9 @@ using Chaos.src.Util;
 
 namespace Chaos.src.Ethena
 {
-    public class Edge: IComparer<Edge>
+    public class Edge: IComparable
     {
-        public Point a { get; protected set; }
-        public Point b { get; protected set; }
-        double cost; 
-
+        double cost;
         public Edge(Point a, Point b)
         {
             this.a = a;
@@ -21,12 +18,19 @@ namespace Chaos.src.Ethena
             this.cost = Point.Dis(a, b);
         }
 
-        public int Compare([AllowNull] Edge x, [AllowNull] Edge y)
+        public Point a { get; protected set; }
+        public Point b { get; protected set; }
+        public static int CompareWeight(Edge x, Edge y)
         {
-            if (object.ReferenceEquals(x, null) || object.ReferenceEquals(y, null))
-                throw new Exception(); // UNDONE: SPECIFIED ERROR TYPE.
-
             return Math.Sign(x.cost - y.cost);
+        }
+
+        public int CompareTo(object obj)
+        {
+            if (object.ReferenceEquals(obj, null)) throw new ArgumentException();
+            if (obj.GetType() != typeof(Edge)) throw new ArgumentException(); // Strict Type equal. 
+
+            return CompareWeight(this, (Edge)obj);
         }
     }
 
@@ -35,7 +39,42 @@ namespace Chaos.src.Ethena
     /// </summary>
     public class FullGraph
     {
-        IDictionary<int, Point> V;
+        protected SortedSet<Edge> E; // Edges soted by weight
+        protected SortedSet<Edge> ChosenE;  // Edges Chosen by Kruskal sorted by weight. 
+        // Maximum partition size during each iteration of cruskal 
+        protected IList<int> max_partition = new List<int>();
+        protected IDictionary<int, Point> V;
+        protected IDictionary<Point, int> W;
+
+        public FullGraph(Point[] points)
+        {
+            V = new SortedDictionary<int, Point>();
+            E = new SortedSet<Edge>();        // Whther the edge is included in the MSt or not. 
+            W = new Dictionary<Point, int>(); // hashed, order is lost in the reverse map. 
+            // Chosen E established in EstablisheMST method. 
+
+            for (int I = 0; I < points.Length; I++)
+            {
+                V[I] = points[I]; // index to vertex
+                W[points[I]] = I; // reverse map
+
+                for (int J = I + 1; J < points.Length; J++)
+                {
+                    E.Add(new Edge(points[I], points[J]));
+                }
+            }
+
+            max_partition = EstablishMST();
+        }
+
+        public virtual IImmutableSet<Edge> ChosedForMST
+        {
+            get
+            {
+                return Basic.ImmuteSet<Edge>(ChosenE);
+            }
+        }
+
         public virtual ImmutableDictionary<int, Point> IndexToVertices
         {
             get {
@@ -43,27 +82,6 @@ namespace Chaos.src.Ethena
                 return Basic.ImmuteDic<int, Point>(V);
             }        
         }
-
-        IDictionary<Point, int> Vee;
-        public virtual ImmutableDictionary<Point, int> VertexToIndex
-        {
-            get
-            {
-                return Basic.ImmuteDic<Point,  int>(Vee);
-            }
-        }
-
-        IDictionary<Edge, bool> E;
-        public virtual ImmutableDictionary<Edge, bool> ChosedForMST
-        {
-            get {
-                return Basic.ImmuteDic<Edge, bool>(E);
-            }
-        }
-
-        // Maximum partition size during each iteration of cruskal 
-        IList<int> max_partition = new List<int>();
-
         public virtual ImmutableList<int> MaxPartitionSize
         {
             get
@@ -72,22 +90,19 @@ namespace Chaos.src.Ethena
             }
         }
 
-        public FullGraph(Point[] points)
+        public virtual ImmutableDictionary<Point, int> VertexToIndex
         {
-            V = new SortedDictionary<int, Point>();
-            E = new SortedDictionary<Edge, bool>(); // Whther the edge is included in the MSt or not. 
-            for(int I = 0; I < points.Length; I++)
+            get
             {
-                V[I] = points[I]; // index to vertex
-                Vee[points[I]] = I; // reverse map
-
-                for (int J = I + 1; J < points.Length; J++)
-                {
-                    E[new Edge(points[I], points[J])] = false; 
-                }
+                return Basic.ImmuteDic<Point,  int>(W);
             }
-
-            max_partition = EstablishMST();
+        }
+        override
+                public string ToString()
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.Append($"full graph with: |V|={V.Count}\n");
+            return sb.ToString();
         }
 
         /// <summary>
@@ -117,30 +132,25 @@ namespace Chaos.src.Ethena
                 PartitionSizes[I] = 1;
             }
 
-            foreach (KeyValuePair<Edge, bool> kvp in E)
+            SortedSet<Edge> ChosenEdges = new SortedSet<Edge>();
+            foreach (Edge e in E)
             {
-                Point u = kvp.Key.a, v = kvp.Key.b;
+                Point u = e.a, v = e.b;
                 if (ds.FindSet(u) != ds.FindSet(v))
                 {
-                    int MergedSize = PartitionSizes[Vee[u]] + PartitionSizes[Vee[v]];
+                    int MergedSize = PartitionSizes[W[u]] + PartitionSizes[W[v]];
                     ds.Join(u, v);
                     PartitionSizes[ds.FindSet(u)] = MergedSize;
                     CompSizes.Add(MergedSize);
                     MaxSize.Add(CompSizes.Max);
-                    this.E[kvp.Key] = true;
+                    ChosenEdges.Add(e);
                 }
+                
             }
 
+            // Establish Field. 
+            ChosenE = ChosenEdges; 
             return MaxSize;
         }
-
-        override
-        public string ToString()
-        {
-            StringBuilder sb = new StringBuilder();
-            sb.Append($"full graph with: |V|={V.Count}\n");
-            return sb.ToString();
-        }
-
     }
 }

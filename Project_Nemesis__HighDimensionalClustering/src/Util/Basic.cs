@@ -214,6 +214,15 @@ namespace Chaos.src.Util
             return ImmutableList.ToImmutableList<T1>(arg);
         }
 
+        public static IImmutableSet<T1> ImmuteSet<T1>(HashSet<T1> arg)
+        {
+            return ImmutableHashSet.ToImmutableHashSet<T1>(arg);
+        }
+
+        public static IImmutableSet<T1> ImmuteSet<T1>(SortedSet<T1> arg)
+        {
+            return ImmutableSortedSet.ToImmutableSortedSet<T1>(arg);
+        }
 
     }
 

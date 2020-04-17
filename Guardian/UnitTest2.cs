@@ -35,8 +35,19 @@ namespace Guardian
 
         [Test]
         public void TestFullgraphBasics()
-        { 
-            
+        {
+            Point[] points = new Point[]
+            {
+                new SpacialPoint(new int[]{ 1, 0}),
+                new SpacialPoint(new int[]{ 2, 0}),
+                new SpacialPoint(new int[]{ 3, 0}),
+                new SpacialPoint(new int[]{ 3, 10})
+            };
+
+            FullGraph fg = new FullGraph(points);
+            WriteLine(fg.IndexToVertices);
+            WriteLine(fg.ChosedForMST);
+
         }
 
         [Test]
