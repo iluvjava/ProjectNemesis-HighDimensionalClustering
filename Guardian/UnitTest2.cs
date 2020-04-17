@@ -6,6 +6,7 @@ using Chaos.src.Util;
 using Chaos.src.Ethena;
 
 using static System.Console;
+using System;
 
 namespace Guardian
 {
@@ -21,43 +22,27 @@ namespace Guardian
 
         }
 
-        /* [Test]
-         public void TestTextAnalysisBasic()
-         {
-             IDictionary<string, string> stuff = Basic.GetContentForAllFiles(PATH, true);
-             foreach (KeyValuePair<string, string> kvp in stuff)
-             {
-                 WriteLine(new TextAnalysis(kvp.Value, kvp.Key));
-             }
-         }
+        [Test]
+        public void TestPointsClass()
+        {
+            
+            Point p1 = new SpacialPoint(new int[] { 0, 0, 0});
+            Point p2 = new SpacialPoint(new int[] { 1, 1 ,1});
+            Assert.IsTrue(Point.Dis(p1, p2)== Math.Sqrt(3));
+            
 
-         /// <summary>
-         /// This test will print out all the edges from the full graph, 
-         /// and it's up to the programmer to visualize the data and 
-         /// determine its correctness. 
-         /// </summary>
-         [Test]
-         public void TestTheFullGraph()
-         {
-             IDictionary<string, string> stuff = Basic.GetContentForAllFiles(PATH, true);
-
-             ISet<TextAnalysis> thethings = new HashSet<TextAnalysis>();
-             foreach (KeyValuePair<string, string> kvp in stuff)
-             {
-                 thethings.Add(new TextAnalysis(kvp.Value, kvp.Key));
-             }
-
-             FullGraph thegraph = new FullGraph(thethings);
-             WriteLine(thegraph.DistanceList(true));
-             WriteLine($"Total number of verteices in the full graph is: {thegraph.VertexCount()}");
-         }*/
-
+        }
 
         [Test]
-        void TestClustering()
+        public void TestFullgraphBasics()
         { 
-        
-        
+            
+        }
+
+        [Test]
+        public void TestClustering()
+        {
+               
         }
 
     }

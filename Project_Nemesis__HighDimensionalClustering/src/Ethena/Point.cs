@@ -29,17 +29,22 @@ namespace Chaos.src.Ethena
         public static double Dis(Point a, Point b)
         {
             
-            if (a.GetType() == typeof(TextAnalysis) || b.GetType() == typeof(TextAnalysis))
+            if (a.GetType() == typeof(TextAnalysis) && b.GetType() == typeof(TextAnalysis))
             {
                 TextAnalysis aa = (TextAnalysis)a, bb = (TextAnalysis)b;
                 return TextAnalysis.Dis(aa, bb); 
             }
-            // TODO: IMPLEMENTE THIS SHIT. 
+
+            if (a.GetType() == typeof(SpacialPoint) && b.GetType() == typeof(SpacialPoint))
+            {
+                SpacialPoint aa = (SpacialPoint)a, bb = (SpacialPoint)b;
+                return SpacialPoint.Dis(aa, bb); 
+            }
+
             throw new NotImplementedException();
 
         }
     }
-
 
     /// <summary>
     /// This class is really for test full graph, that is all. 
@@ -59,6 +64,7 @@ namespace Chaos.src.Ethena
         public SpacialPoint(int[] coords)
         { 
             if (coords.Length == 0) throw new ArgumentException();
+            coord = new double[coords.Length]; 
             for (int I = 0; I < coords.Length; I++) coord[I] = coords[I];
             dim = coords.Length;
         }
@@ -76,6 +82,7 @@ namespace Chaos.src.Ethena
                 throw new ArgumentException("Can't take null. ");
             if (a.dim != b.dim)
                 throw new ArgumentException("Points dimension mismatched.");
+
             double sum = 0;
             for (int I = 0; I < a.dim; sum += Math.Pow(a.coord[I] - b.coord[I], 2.0), I++) ;
             return Math.Sqrt(sum);
