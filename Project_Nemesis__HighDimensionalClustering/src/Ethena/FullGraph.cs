@@ -32,6 +32,13 @@ namespace Chaos.src.Ethena
 
             return CompareWeight(this, (Edge)obj);
         }
+        override
+        public string ToString()
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.Append($"{{ {this.a}, { this.b} }}");
+            return sb.ToString();
+        }
     }
 
     /// <summary>

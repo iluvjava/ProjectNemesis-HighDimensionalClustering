@@ -45,8 +45,18 @@ namespace Guardian
             };
 
             FullGraph fg = new FullGraph(points);
-            WriteLine(fg.IndexToVertices);
-            WriteLine(fg.ChosedForMST);
+            
+            
+            foreach (KeyValuePair<int, Point> kvp in fg.IndexToVertices)
+            {
+                WriteLine($"{kvp.Key}: {kvp.Value}");
+            }
+            WriteLine("List of edges chosen by Kruskal: ");
+            foreach (Edge e in fg.ChosedForMST)
+            {
+                WriteLine($"{e}");
+            }
+            // TODO: TEST FIALED, READ OUTBUT AND FIX IT. 
 
         }
 
