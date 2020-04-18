@@ -30,9 +30,11 @@ namespace Guardian
             Point p2 = new SpacialPoint(new int[] { 1, 1 ,1});
             Assert.IsTrue(Point.Dis(p1, p2)== Math.Sqrt(3));
             
-
         }
 
+        /// <summary>
+        ///     * Test the kruskal running on a basic non trivial graph. 
+        /// </summary>
         [Test]
         public void TestFullgraphBasics()
         {
@@ -41,22 +43,28 @@ namespace Guardian
                 new SpacialPoint(new int[]{ 1, 0}),
                 new SpacialPoint(new int[]{ 2, 0}),
                 new SpacialPoint(new int[]{ 3, 0}),
-                new SpacialPoint(new int[]{ 3, 10})
+                new SpacialPoint(new int[]{ 3, 10}),
+                new SpacialPoint(new int[]{ 4, 0})
             };
 
             FullGraph fg = new FullGraph(points);
-            
             
             foreach (KeyValuePair<int, Point> kvp in fg.IndexToVertices)
             {
                 WriteLine($"{kvp.Key}: {kvp.Value}");
             }
             WriteLine("List of edges chosen by Kruskal: ");
+            
             foreach (Edge e in fg.ChosedForMST)
             {
                 WriteLine($"{e}");
             }
-            // TODO: TEST FIALED, READ OUTBUT AND FIX IT. 
+            WriteLine("Here is the list of partition Sizes: ");
+
+            foreach (int size in fg.MaxPartitionSize)
+            {
+                WriteLine(size);
+            }
 
         }
 

@@ -1,0 +1,88 @@
+Clustring High Dimensional Data with MST
+
+Data: 
+    A set of points, denoted using set "V"
+        * |V| = n
+    Produce a full graph: K_n with points from V. 
+        * |E| = (n(n-1))/2
+        Edges Distance Metric: 
+            * 2 norm
+            * Other norms
+
+Clustering: 
+    Can be clustered from 1 to n clusters.
+    A clear objective is need to optimize for the number of 
+    Partitioning. 
+    
+    Objective: 
+        * Use the relative change in edge length as a threshold for 
+        terminating the clustering. 
+    
+    Algorithm: 
+        * Modified Kruskal.
+        * Disjoint Set with Memo. 
+
+Analysis: 
+    
+    Compare this strategy with Accord.Net's K means clustering on 
+    Transition matrices with data points having dimention more 
+    than 700. 
+    
+    Investigate the following: 
+        * How does MST perform in high dimensional data points compare 
+        to k-mean clustering? 
+
+Clustering??????? 
+    * Run kruskal, recording all the edges chosen in sequence. 
+        * If one edge add 2 sets that are really huge, then it's a sign that it's the optimal partition. 
+    * Keep track of the size of the maximum partition, it should not be the
+        * Print it out as the kruskal evolve, this might be important. 
+Terminating Conditions? 
+    * ????????????????????????????
+    * The maximum change in the maximum size of the partition size. 
+
+
+Tools: 
+    * c#
+    * Some of the libraries I already wrote.
+    * Accord.Net.Math; machine learning library for c#. 
+
+============================================================================
+Design
+============================================================================
+
+Class GlobalSettings:
+    * An enum class for all settings and different options in this program, 
+    It's going to be Singleton. 
+    
+Class Utilities: 
+    * Read all the files for parsing. 
+    * Parse all the files. 
+    * Construct a list of instances of Documents. 
+
+Class Documents: 
+    * Taks in a string and create a character based markov chain for it. 
+
+Class DisjointSet: 
+    * Already there but needs to stored the number of Total Partitions. 
+
+Class DocumentGraphs: 
+    * It's a full graph. 
+    * Stored as: edges |-> Document Pairs. 
+    * Really only needs the n-1 smallest edges.
+
+Class Presenter: 
+    * Print, display, manage settings. 
+    
+
+
+
+Conclusion: 
+    * Doesn't work well with normal distribution that is overlapping: Distance from mu to mu is the same as 
+    the sigma. NO significant distribution exists. 
+    
+    * Criteria for absolute correctness on clustering: 
+        * Distance for all closest pair of edges for direct neibours in both clusters are larger than the closest distance between the 2 clusters
+        * Edges used to construct the MST in both cluster are all less than the smallest edge connecting between the 2 clusters. 
+
+    

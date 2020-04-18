@@ -11,11 +11,13 @@ namespace Chaos.src.Ethena
     public class Edge: IComparable
     {
         double cost;
+        double ID; 
         public Edge(Point a, Point b)
         {
             this.a = a;
             this.b = b;
             this.cost = Point.Dis(a, b);
+            this.ID = (new Random()).NextDouble();
         }
 
         public Point a { get; protected set; }
@@ -25,13 +27,35 @@ namespace Chaos.src.Ethena
             return Math.Sign(x.cost - y.cost);
         }
 
+        /// <summary>
+        ///     Edges equal <==> Points are equaled. 
+        /// </summary>
+        /// <param name="x">
+        /// </param>
+        /// <param name="y">
+        /// </param>
+        /// <returns></returns>
+        public static bool DeepEquals(Edge x, Edge y)
+        {
+            return x.a.Equals(y.a) && x.b.Equals(y.b); 
+        }
+
+        public static double CompareID(Edge x, Edge y)
+        {
+            return x.ID - y.ID; 
+        }
+
         public int CompareTo(object obj)
         {
             if (object.ReferenceEquals(obj, null)) throw new ArgumentException();
             if (obj.GetType() != typeof(Edge)) throw new ArgumentException(); // Strict Type equal. 
-
-            return CompareWeight(this, (Edge)obj);
+            if (object.ReferenceEquals(obj, this)) return 0;
+            if (DeepEquals(this, (Edge)obj)) return 0; 
+            int dw = CompareWeight(this, (Edge)obj);
+            if (dw != 0) return dw;
+            return Math.Sign(CompareID(this, (Edge)obj));
         }
+
         override
         public string ToString()
         {
@@ -39,6 +63,7 @@ namespace Chaos.src.Ethena
             sb.Append($"{{ {this.a}, { this.b} }}");
             return sb.ToString();
         }
+
     }
 
     /// <summary>
@@ -64,11 +89,12 @@ namespace Chaos.src.Ethena
             {
                 V[I] = points[I]; // index to vertex
                 W[points[I]] = I; // reverse map
+            }
 
-                for (int J = I + 1; J < points.Length; J++)
-                {
-                    E.Add(new Edge(points[I], points[J]));
-                }
+            for (int I = 0; I < points.Length; I++)
+            for (int J = I + 1; J < points.Length; J++)
+            {
+                E.Add(new Edge(points[I], points[J]));
             }
 
             max_partition = EstablishMST();
@@ -136,28 +162,47 @@ namespace Chaos.src.Ethena
             for (int I = 0; I < V.Count; I++)
             {
                 ds.CreateSet(V[I]);
-                PartitionSizes[I] = 1;
+                PartitionSizes[I] = 1; // Integer representative starts indexing from 1. 
             }
 
             SortedSet<Edge> ChosenEdges = new SortedSet<Edge>();
+            MaxSize.Add(1);
+            int TotalComponentCount = V.Count - 1; 
             foreach (Edge e in E)
             {
                 Point u = e.a, v = e.b;
                 if (ds.FindSet(u) != ds.FindSet(v))
                 {
-                    int MergedSize = PartitionSizes[W[u]] + PartitionSizes[W[v]];
+                    int MergedSize = PartitionSizes[ds.FindSet(u) - 1] + PartitionSizes[ds.FindSet(v) - 1];
                     ds.Join(u, v);
-                    PartitionSizes[ds.FindSet(u)] = MergedSize;
+                    PartitionSizes[ds.FindSet(u) - 1] = MergedSize;
                     CompSizes.Add(MergedSize);
-                    MaxSize.Add(CompSizes.Max);
                     ChosenEdges.Add(e);
+                    --TotalComponentCount;
                 }
-                
+
+                MaxSize.Add(CompSizes.Max);
+                if (TotalComponentCount == 0) break; 
             }
 
             // Establish Field. 
             ChosenE = ChosenEdges; 
             return MaxSize;
+        }
+
+        /// <summary>
+        ///     * During the runtime of kruskal, there is one step where joining the 
+        ///     components gives the maximum changes in size of the maximum partition
+        ///         ** This point is the point the identify 2 clusters in the graph. 
+        ///     * This method gives an index where this unionization happens. 
+        /// </summary>
+        /// <returns>
+        /// 
+        /// </returns>
+        protected virtual int IdentifyMaxBreakingEdge()
+        {
+            // TODO: IMPLEMENT THIS. 
+            return -1; 
         }
     }
 }

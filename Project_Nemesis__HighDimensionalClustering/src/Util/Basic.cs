@@ -14,7 +14,7 @@ namespace Chaos.src.Util
     public class Basic
     {
 
-        public static bool Verbalize = false;
+        public static bool Verbalize = false; // whether to print a lot of stuff to the console. 
 
         private Basic()
         {
@@ -84,6 +84,98 @@ namespace Chaos.src.Util
             return content;
         }
 
+        /// <summary>
+        /// The string is unprocseed file, 
+        /// how it will be filtered or configured is not depended 
+        /// in this class, it will be managed by settingsmanager. 
+        /// </summary>
+        /// <param name="s"></param>
+        /// <returns></returns>
+        public static double[,] GetTM27(string s)
+        {
+            int[,] res = new int[27, 27];
+
+            IList<char> charList = FilterByAlphebeticalChars(s); // HACK: This part for tweaking later. 
+            for (int I = 1; I < charList.Count; I++)
+            {
+                char c1 = charList[I - 1], c2 = charList[I];
+                int row = c1 == ' ' ? 26 : c1 - 'a';
+                int col = c2 == ' ' ? 26 : c2 - 'a';
+                res[row, col] += 1;
+            }
+
+            double[,] normalizedFreqMatrix = NormalizeAllRow(res);
+            return normalizedFreqMatrix;
+        }
+
+        /// <summary>
+        /// Good helper function. 
+        /// </summary>
+        /// <typeparam name="T1"></typeparam>
+        /// <typeparam name="T2"></typeparam>
+        /// <param name="d"></param>
+        /// <returns></returns>
+        public static ImmutableDictionary<T1, T2> ImmuteDic<T1, T2>(IDictionary<T1, T2> d)
+        {
+            return ImmutableDictionary.ToImmutableDictionary<T1, T2>(d);
+        }
+
+        /// <summary>
+        /// Good helper function. 
+        /// </summary>
+        /// <typeparam name="T1"></typeparam>
+        /// <param name="arg"></param>
+        /// <returns></returns>
+        public static IImmutableList<T1> ImmuteList<T1>(IList<T1> arg)
+        {
+            return ImmutableList.ToImmutableList<T1>(arg);
+        }
+
+        public static IImmutableSet<T1> ImmuteSet<T1>(HashSet<T1> arg)
+        {
+            return ImmutableHashSet.ToImmutableHashSet<T1>(arg);
+        }
+
+        public static IImmutableSet<T1> ImmuteSet<T1>(SortedSet<T1> arg)
+        {
+            return ImmutableSortedSet.ToImmutableSortedSet<T1>(arg);
+        }
+
+        public static double Matrix2NormDistance(double[,] a, double[,] b)
+        {
+            // dimension check: 
+            if (a.GetLength(0) != b.GetLength(0) || a.GetLength(1) != b.GetLength(1))
+                throw new Exception("Matrix Dimension Mismatched. "); // UNDONE: SPECIFY EXCEPTION TYPE. 
+            double sum = 0;
+
+            for (int I = 0; I < a.GetLength(0); I++)
+                for (int J = 0; J < a.GetLength(1); J++)
+                {
+                    sum += Math.Pow(a[I, J] - b[I, J], 2.0);
+                }
+
+            return Math.Sqrt(sum);
+        }
+
+        public static double MatrixVectorizedOneNorm(double[,] a, double[,] b)
+        {
+            // dimension check: 
+            if (a.GetLength(0) != b.GetLength(0) || a.GetLength(1) != b.GetLength(1))
+                throw new Exception("Matrix Dimension Mismatched. "); // UNDONE: SPECIFY EXCEPTION TYPE.
+            double sum = 0;
+
+            for (int I = 0; I < a.GetLength(0); I++)
+                for (int J = 0; J < a.GetLength(1); J++)
+                {
+                    sum += Math.Abs(a[I, J] - b[I, J]);
+                }
+            return sum;
+        }
+
+        public static void Println(object o)
+        {
+            Console.WriteLine(o);
+        }
 
         static FileInfo[] ListFilesRecur(string dir)
         {
@@ -109,63 +201,6 @@ namespace Chaos.src.Util
                 ListFilesRecur(di, bucket); 
             }
         }
-
-
-        /// <summary>
-        /// The string is unprocseed file, 
-        /// how it will be filtered or configured is not depended 
-        /// in this class, it will be managed by settingsmanager. 
-        /// </summary>
-        /// <param name="s"></param>
-        /// <returns></returns>
-        public static double[,] GetTM27(string s)
-        {
-            int[,] res = new int[27, 27];
-
-            IList<char> charList = FilterByAlphebeticalChars(s); // HACK: This part for tweaking later. 
-            for(int I = 1; I < charList.Count; I++)
-            {
-                char c1 = charList[I - 1], c2 = charList[I]; 
-                int row = c1 == ' '? 26: c1 - 'a';
-                int col = c2 == ' ' ? 26 : c2 - 'a';
-                res[row, col] += 1;
-            }
-
-            double[,] normalizedFreqMatrix = NormalizeAllRow(res);
-            return normalizedFreqMatrix;
-        }
-
-        public static double Matrix2NormDistance(double[,] a, double[,] b)
-        {
-            // dimension check: 
-            if (a.GetLength(0) != b.GetLength(0) || a.GetLength(1) != b.GetLength(1))
-                throw new Exception("Matrix Dimension Mismatched. "); // UNDONE: SPECIFY EXCEPTION TYPE. 
-            double sum = 0;
-           
-            for (int I = 0; I < a.GetLength(0); I++)
-            for (int J = 0; J < a.GetLength(1); J++)
-            {
-                sum += Math.Pow(a[I, J] - b[I, J], 2.0);
-            }
-
-            return Math.Sqrt(sum); 
-        }
-
-        public static double MatrixVectorizedOneNorm(double[,] a, double[,] b)
-        {
-            // dimension check: 
-            if (a.GetLength(0) != b.GetLength(0) || a.GetLength(1) != b.GetLength(1))
-                throw new Exception("Matrix Dimension Mismatched. "); // UNDONE: SPECIFY EXCEPTION TYPE.
-            double sum = 0;
-
-            for (int I = 0; I < a.GetLength(0); I++)
-            for (int J = 0; J < a.GetLength(1); J++)
-            {
-                sum += Math.Abs(a[I, J] - b[I, J]);
-            }
-            return sum;
-        }
-
         static double[,] NormalizeAllRow(int[,] a)
         {
             double[,] res = new double[a.GetLongLength(0), a.GetLength(1)]; 
@@ -184,46 +219,6 @@ namespace Chaos.src.Util
             }
             return res;
         }
-
-
-        public static void Println(object o)
-        {
-            Console.WriteLine(o);
-        }
-
-        /// <summary>
-        /// Good helper function. 
-        /// </summary>
-        /// <typeparam name="T1"></typeparam>
-        /// <typeparam name="T2"></typeparam>
-        /// <param name="d"></param>
-        /// <returns></returns>
-        public static ImmutableDictionary<T1, T2> ImmuteDic<T1, T2>(IDictionary<T1, T2> d)
-        {
-            return ImmutableDictionary.ToImmutableDictionary<T1, T2>(d);
-        }
-       
-        /// <summary>
-        /// Good helper function. 
-        /// </summary>
-        /// <typeparam name="T1"></typeparam>
-        /// <param name="arg"></param>
-        /// <returns></returns>
-        public static ImmutableList<T1> ImmuteList<T1>(IList<T1> arg)
-        {
-            return ImmutableList.ToImmutableList<T1>(arg);
-        }
-
-        public static IImmutableSet<T1> ImmuteSet<T1>(HashSet<T1> arg)
-        {
-            return ImmutableHashSet.ToImmutableHashSet<T1>(arg);
-        }
-
-        public static IImmutableSet<T1> ImmuteSet<T1>(SortedSet<T1> arg)
-        {
-            return ImmutableSortedSet.ToImmutableSortedSet<T1>(arg);
-        }
-
     }
 
     
