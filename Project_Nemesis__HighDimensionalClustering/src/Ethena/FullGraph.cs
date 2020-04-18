@@ -19,7 +19,6 @@ namespace Chaos.src.Ethena
             this.cost = Point.Dis(a, b);
             this.ID = (new Random()).NextDouble();
         }
-
         public Point a { get; protected set; }
         public Point b { get; protected set; }
         public static int CompareWeight(Edge x, Edge y)
@@ -130,8 +129,8 @@ namespace Chaos.src.Ethena
                 return Basic.ImmuteDic<Point,  int>(W);
             }
         }
-        override
-                public string ToString()
+        override 
+            public string ToString()
         {
             StringBuilder sb = new StringBuilder();
             sb.Append($"full graph with: |V|={V.Count}\n");
@@ -201,8 +200,67 @@ namespace Chaos.src.Ethena
         /// </returns>
         protected virtual int IdentifyMaxBreakingEdge()
         {
-            // TODO: IMPLEMENT THIS. 
-            return -1; 
+            int MaxChange = 0, MaxChangeIndex = 0; 
+            for (int I = 1; I < max_partition.Count; I++)
+            {
+                // HACK: This part, a >= > can make huge difference. 
+                int delta = max_partition[I] - max_partition[I - 1];
+                if ( delta > MaxChange)
+                {
+                    MaxChange = delta;
+                    MaxChangeIndex = I;
+                }
+
+            }
+            return MaxChangeIndex; 
         }
+
+    }
+
+    /// <summary>
+    ///     TODO: IMPLEMENT THIS SHIT. 
+    ///     * Should not accept fewer than 5 points, that is just too small to determine. 
+    /// </summary>
+    public class FullGraphClustering : FullGraph
+    {
+        protected Point Centroid1;
+        protected Point centroid2;
+        protected ISet<Point> Cluster1;
+        protected ISet<Point> Cluters2;
+
+        public FullGraphClustering(Point[] points): base(points)
+        {
+            
+        }
+
+        /// <summary>
+        ///     Identify 2 points from the collection that are mostly liekly to be the center 
+        ///     of 2 of the cluters. 
+        /// </summary>
+        protected virtual void IdentifyCentroids()
+        { 
+            
+        }
+
+        /// <summary>
+        ///     Given the established centroids, this will classfy then based on the distance. 
+        ///     
+        /// </summary>
+        protected virtual void ClassifyByCentroid()
+        {
+
+        }
+
+
+        /// <summary>
+        ///     * Run Kruskal again with the information about the max breaking edge 
+        ///     in the graph. 
+        /// </summary>
+        protected virtual void KrusktalAagain()
+        { 
+        
+        }
+
+
     }
 }
