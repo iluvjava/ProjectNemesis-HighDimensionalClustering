@@ -64,6 +64,75 @@ namespace Chaos.src.Ethena
         }
 
     }
+    // TODO: TEST THIS CLASS. 
+    /// <summary>
+    ///     A class designed for ranking the clusters by their sizes. 
+    ///     * A collection of points will be put into a set, and order by their sizes. 
+    ///     * The top ranking 2 collection will be regarded as the potential centroids 
+    ///     for 2 of the clusters we want to identify. 
+    /// </summary>
+    public class PointCollection : IComparable
+    {
+
+        protected HashSet<Point> PointSet;
+
+        public PointCollection(Point p)
+        {
+            PointSet = new HashSet<Point>();
+            PointSet.Add(p);
+        }
+
+        /// <summary>
+        ///     Default constructor for static methods of the class. 
+        /// </summary>
+        protected PointCollection()
+        { 
+            
+        }
+
+        public int CompareTo(object obj)
+        {
+            if (object.ReferenceEquals(obj, null) || obj.GetType() != typeof(PointCollection))
+            {
+                throw new ArgumentException(); 
+            }
+            
+            PointCollection that = (PointCollection)obj;
+            if (object.ReferenceEquals(this, that)) return 0;
+            if (DeepEqual(this, that)) return 0;
+            int SizeDiff = this.PointSet.Count - that.PointSet.Count;
+            if (SizeDiff != 0) return Math.Sign(SizeDiff);
+            return Math.Sign(this.GetHashCode() - that.GetHashCode()); 
+            // Having the same size doesn't mean they are equal.  
+        }
+
+        public static bool DeepEqual(PointCollection p1, PointCollection p2)
+        {
+            return p1.PointSet.Equals(p2.PointSet); 
+        }
+
+        /// <summary>
+        ///     Union 2 collection together into one point collection. 
+        /// </summary>
+        /// <param name="pc1">
+        ///     Point collection 1
+        /// </param>
+        /// <param name="pc2">
+        ///     Point collection 2 
+        /// </param>
+        /// <returns>
+        ///     The union of 2 of the point collection. 
+        /// </returns>
+        public static PointCollection operator + (PointCollection pc1, PointCollection pc2)
+        {
+            PointCollection Merged = new PointCollection();
+            HashSet<Point> MergedSet = new HashSet<Point>();
+            MergedSet.UnionWith(pc1.PointSet);
+            MergedSet.UnionWith(pc1.PointSet);
+            Merged.PointSet = MergedSet; 
+            return Merged; 
+        }
+    }
 
     /// <summary>
     /// TODO: This whole class is not tested yet. 
@@ -74,6 +143,7 @@ namespace Chaos.src.Ethena
         protected SortedSet<Edge> ChosenE;  // Edges Chosen by Kruskal sorted by weight. 
         // Maximum partition size during each iteration of cruskal 
         protected IList<int> max_partition = new List<int>();
+        // The index 0 is always one, because before we run kruskal, all partitions are 1 vertex with size 1. 
         protected IDictionary<int, Point> V;
         protected IDictionary<Point, int> W;
 
@@ -193,10 +263,12 @@ namespace Chaos.src.Ethena
         ///     * During the runtime of kruskal, there is one step where joining the 
         ///     components gives the maximum changes in size of the maximum partition
         ///         ** This point is the point the identify 2 clusters in the graph. 
-        ///     * This method gives an index where this unionization happens. 
+        ///     * This method gives an index where this unionization happens of 2 large cluster happened. 
+        ///     * Pause right before the returned index, that is the point where 2 of the largest unionizations
+        ///     is about to happen, like, right on the next iteration. 
         /// </summary>
         /// <returns>
-        /// 
+        ///     positive integer. 
         /// </returns>
         protected virtual int IdentifyMaxBreakingEdge()
         {
@@ -225,8 +297,10 @@ namespace Chaos.src.Ethena
     {
         protected Point Centroid1;
         protected Point centroid2;
-        protected ISet<Point> Cluster1;
-        protected ISet<Point> Cluters2;
+        protected ISet<Point> TopCluster1;
+        protected ISet<Point> TopCluters2;
+        // A sorted set of collections of points. 
+        protected SortedSet<PointCollection> EvolvingClusters;
 
         public FullGraphClustering(Point[] points): base(points)
         {
@@ -251,14 +325,41 @@ namespace Chaos.src.Ethena
 
         }
 
-
         /// <summary>
         ///     * Run Kruskal again with the information about the max breaking edge 
         ///     in the graph. 
         /// </summary>
         protected virtual void KrusktalAagain()
-        { 
-        
+        {
+            int TerminateIndex = base.IdentifyMaxBreakingEdge();
+            ArrayDisjointSet<Point> ds = new ArrayDisjointSet<Point>();
+            SortedDictionary<int, PointCollection> Partitions = new SortedDictionary<int, PointCollection>();
+            SortedSet<PointCollection> ClustersSet = new SortedSet<PointCollection>();
+
+            for (int I = 0; I < V.Count; I++)
+            {
+                ds.CreateSet(V[I]);
+                PointCollection pc = new PointCollection(V[I]);
+                Partitions[I] = pc;
+                ClustersSet.Add(pc);
+            }
+
+            foreach (Edge e in E)
+            {
+                Point v = e.a, u = e.b;
+                if (ChosenE.Contains(e))
+                {
+                    PointCollection P1 = Partitions[ds.FindSet(v) - 1], P2 =  Partitions[ds.FindSet(u) - 1];
+                    PointCollection JoinedPartition = P1 + P2;
+                    ds.Join(v, u);
+                    Partitions[ds.FindSet(u) - 1] = JoinedPartition;
+                    ClustersSet.Remove(P1);
+                    ClustersSet.Remove(P1);
+                    ClustersSet.Add(JoinedPartition); 
+                }
+                if (--TerminateIndex == 1) break;
+            }
+                
         }
 
 
