@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using MathNet.Numerics.Random;
+using MathNet.Numerics.Distributions;
+using Chaos.src.Util;
 
 namespace Chaos.src.Ethena
 {
@@ -44,6 +47,21 @@ namespace Chaos.src.Ethena
             throw new NotImplementedException();
 
         }
+
+        public static Point CentroidOf(Point[] points)
+        {
+            if (points.Length == 0) throw new Exception(); // TODO: CLARIFY EXCEPTION HERE. 
+
+            if (points[0].GetType() == typeof(SpacialPoint))
+            {
+                SpacialPoint[] p = new SpacialPoint[points.Length];
+                for (int I = 0; I < p.Length; I++) p[I] = (SpacialPoint)points[I]; 
+                return SpacialPoint.TakeAverage(p);
+            }
+
+            throw new NotImplementedException(); // TODO: NOT IMPLEMENTED YET. 
+        }
+
     }
 
     /// <summary>
@@ -54,6 +72,13 @@ namespace Chaos.src.Ethena
     {
         double[] coord;
         int dim;
+
+        protected SpacialPoint(int dimension)
+        {
+            // internal constructor, origin is created. 
+            coord = new double[dimension];
+            dim = dimension;
+        }
 
         public SpacialPoint(double[] coords)
         {
@@ -88,8 +113,9 @@ namespace Chaos.src.Ethena
             for (int I = 0; I < a.dim; sum += Math.Pow(a.coord[I] - b.coord[I], 2.0), I++) ;
             return Math.Sqrt(sum);
         }
-
-        public override string ToString()
+        
+        override
+        public string ToString()
         {
             StringBuilder sb = new StringBuilder("(");
             for (int I = 0; I < coord.Length - 1; I++)
@@ -100,7 +126,46 @@ namespace Chaos.src.Ethena
             return sb.ToString();
         }
 
+        public static Point[] NormalRandomPoints(double[] mu, double sd, int N)
+        {
+            SpacialPoint[] res = new SpacialPoint[N];
+            int dimension = mu.Length;
+            Normal[] Generators = new Normal[dimension];
+            
+            for (int I = 0; I < dimension; Generators[I] = new Normal(mu[I], sd), I++);
+            
+            for (int I = 0; I < N; I++)
+            {
+                res[I] = new SpacialPoint(dimension); 
+            }
+            for (int I = 0; I < dimension; I++)
+            {
+                double[] RandSamples = new double[N]; 
+                Generators[I].Samples(RandSamples);
+                for (int J = 0; J < N; J++)
+                {
+                    res[J].coord[I] = RandSamples[J];
+                }
+            }
+            
+            return res;
+            
+        }
 
+        /// <summary>
+        ///     Take the average of all spacial points from a list of points. 
+        /// </summary>
+        /// <returns></returns>
+        public static Point TakeAverage(SpacialPoint[] points)
+        {
+            double[][] thecoords = new double[points.Length][];
+            for (int I = 0; I < points.Length; I++)
+            {
+                thecoords[I] = points[I].coord; 
+            }
+
+            return new SpacialPoint(Basic.EntrywiseAverage(thecoords));
+        }
 
     }
 

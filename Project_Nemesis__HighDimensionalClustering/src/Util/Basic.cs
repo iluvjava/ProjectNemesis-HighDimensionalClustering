@@ -79,6 +79,7 @@ namespace Chaos.src.Util
             }
             catch (IOException e)
             {
+
                 return null;
             }
             return content;
@@ -172,6 +173,44 @@ namespace Chaos.src.Util
             return sum;
         }
 
+        /// <summary>
+        ///     Take the average, entries wise, for a list of doubles. 
+        ///     * Zagged array is ok, it will do it entrywise, divided by the number of 
+        ///     inner arrays having that entry available. 
+        /// </summary>
+        /// <param name="arg">
+        ///     Nested array. 
+        /// </param>
+        /// <returns>
+        ///     The entrywiese average. 
+        /// </returns>
+        public static double[] EntrywiseAverage(double[][] arg)
+        {
+            if (arg.Length == 0) return null; 
+            int MaxArrayLength = arg[0].Length;
+
+            for (int I = 0; I < arg.Length; I++)
+            {
+                MaxArrayLength = Math.Max(MaxArrayLength, arg[I].Length); 
+            }
+
+            double[] EntrySum = new double[MaxArrayLength];
+            double[] EntryCount = new double[MaxArrayLength];
+            double[] Avg = new double[MaxArrayLength]; 
+            for (int I = 0; I < arg.Length; I++)
+                for (int J = 0; J < arg[I].Length; J++)
+                {
+                    EntrySum[J] += arg[I][J];
+                    EntryCount[J]++; 
+                }
+            for (int I = 0; I < MaxArrayLength; I++)
+            {
+                Avg[I] = EntrySum[I] / EntryCount[I]; 
+            }
+
+            return Avg; 
+        }
+
         public static void Println(object o)
         {
             Console.WriteLine(o);
@@ -219,6 +258,8 @@ namespace Chaos.src.Util
             }
             return res;
         }
+
+
     }
 
     

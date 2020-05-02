@@ -5,6 +5,7 @@ using System.Collections.Immutable;
 using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using Chaos.src.Util;
+using System.Threading.Tasks;
 
 namespace Chaos.src.Ethena
 {
@@ -64,6 +65,7 @@ namespace Chaos.src.Ethena
         }
 
     }
+
     // TODO: TEST THIS CLASS. 
     /// <summary>
     ///     A class designed for ranking the clusters by their sizes. 
@@ -127,10 +129,34 @@ namespace Chaos.src.Ethena
         {
             PointCollection Merged = new PointCollection();
             HashSet<Point> MergedSet = new HashSet<Point>();
+
             MergedSet.UnionWith(pc1.PointSet);
-            MergedSet.UnionWith(pc1.PointSet);
+            MergedSet.UnionWith(pc2.PointSet);
             Merged.PointSet = MergedSet; 
             return Merged; 
+        }
+
+        public Point[] ToArray()
+        {
+            Point[] res = new Point[PointSet.Count];
+            PointSet.CopyTo(res);
+            return res; 
+        }
+
+        override
+        public string ToString()
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.Append("Pointcollection: {");
+
+            foreach (Point p in PointSet)
+            {
+                sb.Append(p.ToString() + ", ");
+            }
+
+            sb.Remove(sb.Length - 2, 2);
+            sb.Append("}");
+            return sb.ToString(); 
         }
     }
 
@@ -160,13 +186,45 @@ namespace Chaos.src.Ethena
                 W[points[I]] = I; // reverse map
             }
 
-            for (int I = 0; I < points.Length; I++)
-            for (int J = I + 1; J < points.Length; J++)
+            // Non parallel 
             {
-                E.Add(new Edge(points[I], points[J]));
+                for (int I = 0; I < points.Length; I++)
+                    for (int J = I + 1; J < points.Length; J++)
+                    {
+                        E.Add(new Edge(points[I], points[J]));
+                    }
+            }
+            // Parallel 
+            {
+                /* EdgesBuffers Buffer = new EdgesBuffers(E);*/
+                /* Parallel.For(0, points.Length, I => {
+                     for(int J = I + 1; J < points.Length; J++)
+                     {
+                         Buffer.LockAdd(new Edge(points[I], points[J])); 
+                     }
+                 });*/
             }
 
             max_partition = EstablishMST();
+        }
+        /// <summary>
+        ///     A Recources holder for computing full graphs in parallel. 
+        ///     * Lock the sorted set. 
+        /// </summary>
+        protected class EdgesBuffers
+        {
+            SortedSet<Edge> Holder;
+            public EdgesBuffers(SortedSet<Edge> arg)
+            {
+                Holder = arg; 
+            }
+
+            public void LockAdd(Edge e)
+            {
+                lock(this)
+                Holder.Add(e);
+            }
+        
         }
 
         public virtual IImmutableSet<Edge> ChosedForMST
@@ -184,7 +242,7 @@ namespace Chaos.src.Ethena
                 return Basic.ImmuteDic<int, Point>(V);
             }        
         }
-        public virtual ImmutableList<int> MaxPartitionSize
+        public virtual IImmutableList<int> MaxPartitionSize
         {
             get
             {
@@ -282,7 +340,6 @@ namespace Chaos.src.Ethena
                     MaxChange = delta;
                     MaxChangeIndex = I;
                 }
-
             }
             return MaxChangeIndex; 
         }
@@ -295,30 +352,43 @@ namespace Chaos.src.Ethena
     /// </summary>
     public class FullGraphClustering : FullGraph
     {
-        protected Point Centroid1;
-        protected Point centroid2;
+        public Point Centroid1 { get; protected set;}
+        public Point Centroid2 { get; protected set;}
         protected ISet<Point> TopCluster1;
         protected ISet<Point> TopCluters2;
         // A sorted set of collections of points. 
         protected SortedSet<PointCollection> EvolvingClusters;
 
+        public IImmutableSet<PointCollection> Clusters
+        {
+            get {
+                return Basic.ImmuteSet<PointCollection>(EvolvingClusters);
+            }
+        }
+
         public FullGraphClustering(Point[] points): base(points)
         {
-            
+            EvolvingClusters = KrusktalAagain();
+            IdentifyCentroids(); 
         }
 
         /// <summary>
-        ///     Identify 2 points from the collection that are mostly liekly to be the center 
+        ///     * Identify 2 points from the collection that are mostly liekly to be the center 
         ///     of 2 of the cluters. 
+        ///     * By default, it's going to be the top 2 clusters, which are basically 2 of the largest 
+        ///     clusters. 
         /// </summary>
         protected virtual void IdentifyCentroids()
-        { 
-            
+        {
+            PointCollection MaxClusters = EvolvingClusters.Max;
+            Centroid1 = Point.CentroidOf(MaxClusters.ToArray());
+            EvolvingClusters.Remove(EvolvingClusters.Max);
+            Centroid2 = Point.CentroidOf(EvolvingClusters.Max.ToArray());
+            EvolvingClusters.Add(MaxClusters); 
         }
 
         /// <summary>
         ///     Given the established centroids, this will classfy then based on the distance. 
-        ///     
         /// </summary>
         protected virtual void ClassifyByCentroid()
         {
@@ -329,7 +399,7 @@ namespace Chaos.src.Ethena
         ///     * Run Kruskal again with the information about the max breaking edge 
         ///     in the graph. 
         /// </summary>
-        protected virtual void KrusktalAagain()
+        protected virtual SortedSet<PointCollection> KrusktalAagain()
         {
             int TerminateIndex = base.IdentifyMaxBreakingEdge();
             ArrayDisjointSet<Point> ds = new ArrayDisjointSet<Point>();
@@ -354,12 +424,13 @@ namespace Chaos.src.Ethena
                     ds.Join(v, u);
                     Partitions[ds.FindSet(u) - 1] = JoinedPartition;
                     ClustersSet.Remove(P1);
-                    ClustersSet.Remove(P1);
+                    ClustersSet.Remove(P2);
                     ClustersSet.Add(JoinedPartition); 
                 }
-                if (--TerminateIndex == 1) break;
+                if (--TerminateIndex == 1) break; // Gives it some room. 
             }
-                
+
+            return ClustersSet; 
         }
 
 

@@ -137,11 +137,15 @@ namespace MyDatastructure.UnionFind
             if (setArank == setBrank)
             {
                 if (rootindexA < rootindexB)
+                {
                     Forest[rootindexB] = rootindexA;
+                    Forest[rootindexA]--;
+                }
                 else
+                {
                     Forest[rootindexA] = rootindexB;
-
-                Forest[rootindexA]--;
+                    Forest[rootindexB]--; 
+                }
                 return;
             }
             if (setArank > setBrank)
@@ -180,17 +184,7 @@ namespace MyDatastructure.UnionFind
             return FindSet(a);
         }
 
-        //TODO: IMPLEMENT THIS SHIT
-        public int DisjointSetCount() 
-        {
-            throw new NotImplementedException();
-        }
-
-        //TODO: IMPLEMENT THIS SHIT. 
-        public IDisjointSet<T> DeepCopy()
-        {
-            return null; 
-        }
+       
     }
 }
 
