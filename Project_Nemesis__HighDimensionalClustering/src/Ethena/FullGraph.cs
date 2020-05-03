@@ -66,7 +66,6 @@ namespace Chaos.src.Ethena
 
     }
 
-    // TODO: TEST THIS CLASS. 
     /// <summary>
     ///     A class designed for ranking the clusters by their sizes. 
     ///     * A collection of points will be put into a set, and order by their sizes. 
@@ -144,7 +143,7 @@ namespace Chaos.src.Ethena
         }
 
         override
-        public string ToString()
+            public string ToString()
         {
             StringBuilder sb = new StringBuilder();
             sb.Append("Pointcollection: {");
@@ -161,7 +160,7 @@ namespace Chaos.src.Ethena
     }
 
     /// <summary>
-    /// TODO: This whole class is not tested yet. 
+    /// 
     /// </summary>
     public class FullGraph
     {
@@ -359,6 +358,13 @@ namespace Chaos.src.Ethena
         // A sorted set of collections of points. 
         protected SortedSet<PointCollection> EvolvingClusters;
 
+        /// <summary>
+        ///     2 of the partition identified by the kruskal algorithm. 
+        ///     Will be established by the ClassifyByCentroid method. 
+        /// </summary>
+        protected ISet<Point> IdentifiedCluster1;
+        protected ISet<Point> IdentifiedCluster2;
+
         public IImmutableSet<PointCollection> Clusters
         {
             get {
@@ -368,6 +374,7 @@ namespace Chaos.src.Ethena
 
         public FullGraphClustering(Point[] points): base(points)
         {
+            if (points.Length <= 4) throw new Exception("too small to cluster. ");
             EvolvingClusters = KrusktalAagain();
             IdentifyCentroids(); 
         }
@@ -392,7 +399,7 @@ namespace Chaos.src.Ethena
         /// </summary>
         protected virtual void ClassifyByCentroid()
         {
-
+            // TODO: IMPLEMENT THIS. 
         }
 
         /// <summary>

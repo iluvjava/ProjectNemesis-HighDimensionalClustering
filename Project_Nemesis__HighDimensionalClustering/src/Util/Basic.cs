@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Text;
 using System.IO;
 using System.Collections.Immutable;
+using MathNet.Numerics.Optimization;
+using System.Globalization;
 
 namespace Chaos.src.Util
 {
@@ -146,7 +148,7 @@ namespace Chaos.src.Util
         {
             // dimension check: 
             if (a.GetLength(0) != b.GetLength(0) || a.GetLength(1) != b.GetLength(1))
-                throw new Exception("Matrix Dimension Mismatched. "); // UNDONE: SPECIFY EXCEPTION TYPE. 
+                throw new Exception("Matrix Dimension Mismatched. ");
             double sum = 0;
 
             for (int I = 0; I < a.GetLength(0); I++)
@@ -162,7 +164,7 @@ namespace Chaos.src.Util
         {
             // dimension check: 
             if (a.GetLength(0) != b.GetLength(0) || a.GetLength(1) != b.GetLength(1))
-                throw new Exception("Matrix Dimension Mismatched. "); // UNDONE: SPECIFY EXCEPTION TYPE.
+                throw new Exception("Matrix Dimension Mismatched. ");
             double sum = 0;
 
             for (int I = 0; I < a.GetLength(0); I++)
@@ -209,6 +211,55 @@ namespace Chaos.src.Util
             }
 
             return Avg; 
+        }
+
+        /// <summary>
+        ///     Takes the average of entries wise average for 2d array, 
+        ///     the size of the 2d uniform arrays can be arbitrarily sized, 
+        ///     and it will stake take the average because it only focuses the averages 
+        ///     of each entries
+        ///     
+        ///     The resulting 2D array will have width and height of the 2d array 
+        ///     that has the largest width and height in the give list of 2d array. 
+        /// </summary>
+        /// <param name="arg"></param>
+        /// <returns></returns>
+        public static double[,] EntrywiseAverage(double[][,] arg)
+        {
+            if (arg.Length == 0) throw new ArgumentException("Cannot accept empty argument. ");
+            int MaxH = arg[0].GetLength(0), MaxW = arg[0].GetLength(1);
+            {
+                for (int I = 0; I < arg.Length; I++)
+                {
+                    MaxH = Math.Max(arg[I].GetLength(0), MaxH);
+                    MaxW = Math.Max(arg[I].GetLength(1), MaxW); 
+                }
+            }
+
+            int[,] FrequenciesTable = new int[MaxH, MaxW];
+            double[,] SumTable = new double[MaxH, MaxW];
+            {
+                for (int I = 0; I < arg.Length; I++)
+                {
+                    double[,] M = arg[I];
+                    for (int J = 0; J < M.GetLength(0); J++)
+                        for (int K = 0; K < M.GetLength(1); K++)
+                        {
+                            FrequenciesTable[J, K]++;
+                            SumTable[J, K] += M[J, K]; 
+                        }
+                }
+            }
+
+            double[,] AverageTable = new double[MaxH, MaxW];
+            {
+                for (int I = 0; I < MaxH; I++)
+                    for (int J = 0; J < MaxW; J++)
+                    {
+                        AverageTable[I, J] = SumTable[I, J] / FrequenciesTable[I, J]; 
+                    }
+            }
+            return AverageTable;
         }
 
         public static void Println(object o)

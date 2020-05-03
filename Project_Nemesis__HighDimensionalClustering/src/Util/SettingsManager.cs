@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MathNet.Numerics.LinearAlgebra.Complex;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using static Chaos.src.Util.Basic;
@@ -25,8 +26,8 @@ namespace Chaos.src.Util
     /// </summary>
     public class SettingsManager
     {
-
-
+        public static MatrixMetric MtxMetric = MatrixMetric.TwoNorm;
+        public static MatrixType MtxType = MatrixType.Tm27;
         private SettingsManager()
         {
 
@@ -44,11 +45,27 @@ namespace Chaos.src.Util
 
         public static MatrixDisFxn DispatchMatrixDisFxn()
         {
-            MatrixDisFxn TwoNorm = delegate (double[,] a, double[,] b)
+            switch (MtxMetric)
             {
-                return Matrix2NormDistance(a, b);
-            };
-            return TwoNorm;
+                case MatrixMetric.TwoNorm:
+                {
+                    MatrixDisFxn TwoNorm = delegate (double[,] a, double[,] b)
+                    {
+                        return Matrix2NormDistance(a, b);
+                    };
+                    return TwoNorm;
+                }
+                case MatrixMetric.VecOneNorm:
+                {
+                    MatrixDisFxn VectorizedNorm = delegate (double[,] a, double[,] b)
+                    {
+                        return MatrixVectorizedOneNorm(a, b);
+                    };
+                    return VectorizedNorm; 
+                }
+            }
+
+            throw new Exception("This shouldn't happen, please go check source codes.");
         }
 
 

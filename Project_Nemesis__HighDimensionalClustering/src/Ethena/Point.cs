@@ -32,15 +32,15 @@ namespace Chaos.src.Ethena
         public static double Dis(Point a, Point b)
         {
             
-            if (a.GetType() == typeof(TextAnalysis) && b.GetType() == typeof(TextAnalysis))
+            if (a is Text && b is Text)
             {
-                TextAnalysis aa = (TextAnalysis)a, bb = (TextAnalysis)b;
-                return TextAnalysis.Dis(aa, bb); 
+                Text aa = (Text)a, bb = (Text)b;
+                return Text.Dis(aa, bb); 
             }
 
-            if (a.GetType() == typeof(SpacialPoint) && b.GetType() == typeof(SpacialPoint))
+            if (a is SpacialPoint && b is SpacialPoint)
             {
-                SpacialPoint aa = (SpacialPoint)a, bb = (SpacialPoint)b;
+                SpacialPoint aa = a as SpacialPoint, bb = b as SpacialPoint;
                 return SpacialPoint.Dis(aa, bb); 
             }
 
@@ -50,13 +50,19 @@ namespace Chaos.src.Ethena
 
         public static Point CentroidOf(Point[] points)
         {
-            if (points.Length == 0) throw new Exception(); // TODO: CLARIFY EXCEPTION HERE. 
+            if (points.Length == 0) throw new Exception("Can't find the centroid of an empty points[]."); 
 
-            if (points[0].GetType() == typeof(SpacialPoint))
+            if (points[0] is SpacialPoint)
             {
                 SpacialPoint[] p = new SpacialPoint[points.Length];
                 for (int I = 0; I < p.Length; I++) p[I] = (SpacialPoint)points[I]; 
                 return SpacialPoint.TakeAverage(p);
+            }
+
+            if (points[0] is Text)
+            {
+                Text[] T = points as Text[];
+                return Text.GetCentroidAmong(T);
             }
 
             throw new NotImplementedException(); // TODO: NOT IMPLEMENTED YET. 
@@ -104,7 +110,7 @@ namespace Chaos.src.Ethena
         /// <returns></returns>
         public static double Dis(SpacialPoint a, SpacialPoint b)
         {
-            if (object.ReferenceEquals(a, null) || object.ReferenceEquals(b, null))
+            if (a is null || b is null)
                 throw new ArgumentException("Can't take null. ");
             if (a.dim != b.dim)
                 throw new ArgumentException("Points dimension mismatched.");
