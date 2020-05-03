@@ -99,9 +99,13 @@ namespace Chaos.src.Ethena
     /// <summary>
     ///     This class cluster text files under a certain directory, and it 
     ///     will just print out the clustering in the end. 
+    ///     * This class will treat the list of instances of text as point and 
+    ///     feed them to full graph class. 
     /// </summary>
     public class TextFileCluster
-    { 
+    {
+        FullGraphClustering ClusterIdentifier; 
+        
         
     }
 

@@ -376,7 +376,8 @@ namespace Chaos.src.Ethena
         {
             if (points.Length <= 4) throw new Exception("too small to cluster. ");
             EvolvingClusters = KrusktalAagain();
-            IdentifyCentroids(); 
+            IdentifyCentroids();
+            ClassifyByCentroid();
         }
 
         /// <summary>
@@ -399,7 +400,17 @@ namespace Chaos.src.Ethena
         /// </summary>
         protected virtual void ClassifyByCentroid()
         {
-            // TODO: IMPLEMENT THIS. 
+            ISet<Point> C1 = new HashSet<Point>(), C2 = new HashSet<Point>(); 
+            foreach(Point v in V.Values)
+            {
+                if (Point.Dis(v, Centroid1) <= Point.Dis(v, Centroid2))
+                {
+                    C1.Add(v);
+                }
+                else C2.Add(v); 
+            }
+            IdentifiedCluster1 = C1;
+            IdentifiedCluster2 = C2;
         }
 
         /// <summary>

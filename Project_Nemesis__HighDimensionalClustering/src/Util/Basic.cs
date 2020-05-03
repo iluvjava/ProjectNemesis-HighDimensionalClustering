@@ -54,17 +54,27 @@ namespace Chaos.src.Util
             return charStream;
         }
 
+
+
         /// <summary>
         /// 
         /// </summary>
         /// <param name="Directory">
         /// </param>
         /// <returns></returns>
-        public static IDictionary<String, String> GetContentForAllFiles(String Directory, bool recursive = false)
+        public static IDictionary<String, String> GetContentForAllFiles (
+                String Directory,
+                bool recursive = false, 
+                string pstfix = null
+            )
         {
             DirectoryInfo dirInfo = new DirectoryInfo(Directory);
             if (!dirInfo.Exists) return null;
             FileInfo[] files = recursive? ListFilesRecur(Directory):dirInfo.GetFiles();
+            if (!(pstfix is null))
+            {
+                files = FilterFilesByPostFix(files, "txt"); 
+            }
             IDictionary<String, String> content = new SortedDictionary<String, String>();
             try 
             {
@@ -81,7 +91,6 @@ namespace Chaos.src.Util
             }
             catch (IOException e)
             {
-
                 return null;
             }
             return content;
@@ -310,6 +319,25 @@ namespace Chaos.src.Util
             return res;
         }
 
+        /// <summary>
+        ///     Filter out files containing a certain postfix. 
+        /// </summary>
+        /// <param name="postfix"></param>
+        /// <returns>
+        /// An array of files filtered by post fix. 
+        /// </returns>
+        static FileInfo[] FilterFilesByPostFix(FileInfo[] files, string postfix)
+        {
+            var filtered = new List<FileInfo>(); 
+            foreach(FileInfo f in files)
+            {
+                if(f.Name.Substring(f.Name.Length - 3).Equals(postfix))
+                {
+                    filtered.Add(f);
+                }
+            }
+            return filtered.ToArray();
+        }
 
     }
 
