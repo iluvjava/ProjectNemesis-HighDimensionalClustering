@@ -54,15 +54,22 @@ namespace Chaos.src.Util
             return charStream;
         }
 
-
-
         /// <summary>
-        /// 
+        ///     Function gets the content of all files under a certain directory on the system, 
+        ///     * Recursive scan
+        ///     * Filter by one postfix. 
         /// </summary>
         /// <param name="Directory">
+        ///     String representing the directory, without / at the end of the string. 
+        /// </param>
+        /// <param name="recursive">
+        ///     When this is set to true, it will scan all folders under the directory, recursively. 
+        /// </param>
+        /// <param name="pstfix">
+        ///     Given a post fix, e.g: .txt so that only .txt files will get returned. 
         /// </param>
         /// <returns></returns>
-        public static IDictionary<String, String> GetContentForAllFiles (
+        public static IDictionary<String, String> GetContentForAllFiles(
                 String Directory,
                 bool recursive = false, 
                 string pstfix = null
@@ -73,7 +80,11 @@ namespace Chaos.src.Util
             FileInfo[] files = recursive? ListFilesRecur(Directory):dirInfo.GetFiles();
             if (!(pstfix is null))
             {
-                files = FilterFilesByPostFix(files, "txt"); 
+                files = FilterFilesByPostFix(files, pstfix);
+            }
+            else 
+            {
+                files = FilterFilesByPostFix(files, pstfix); 
             }
             IDictionary<String, String> content = new SortedDictionary<String, String>();
             try 
@@ -121,6 +132,31 @@ namespace Chaos.src.Util
         }
 
         /// <summary>
+        ///     A 27 character transition matrix, second order. 
+        /// </summary>
+        /// <param name ="s">
+        ///     The raw text in English. 
+        /// </param>
+        /// <returns>
+        ///     A double, which is gotten from the converted string. 
+        /// </returns>
+        public static double[,] Get2ndTM27(string s) // TODO: NEEDS TESTING FOR THIS METHOD BEFORE DEPLOYMENT. 
+        {
+            int[,] res = new int[27*27, 27*27];
+            IList<char> charlist = FilterByAlphebeticalChars(s);
+            for (int I = 2; I < charlist.Count - 1; I++)
+            {
+                int c1 = charlist[I - 2] == ' ' ? 26 : charlist[I - 2] - 'a';
+                int c2 = charlist[I - 1] == ' ' ? 26 : charlist[I - 1] - 'a';
+                int c3 = charlist[I] == ' ' ? 26 : charlist[I] - 'a';
+                int c4 = charlist[I + 1] == ' ' ? 26 : charlist[I + 1] - 'a';
+                res[c1 * c2, c3 * c4] += 1;
+            }
+            double[,] normalizedFreqMatrix = NormalizeAllRow(res);
+            return normalizedFreqMatrix;
+        }
+
+        /// <summary>
         /// Good helper function. 
         /// </summary>
         /// <typeparam name="T1"></typeparam>
@@ -151,6 +187,11 @@ namespace Chaos.src.Util
         public static IImmutableSet<T1> ImmuteSet<T1>(SortedSet<T1> arg)
         {
             return ImmutableSortedSet.ToImmutableSortedSet<T1>(arg);
+        }
+
+        public static IImmutableSet<T1> ImmuteSet<T1>(ISet<T1> arg)
+        {
+            return ImmutableHashSet.ToImmutableHashSet<T1>(arg);
         }
 
         public static double Matrix2NormDistance(double[,] a, double[,] b)

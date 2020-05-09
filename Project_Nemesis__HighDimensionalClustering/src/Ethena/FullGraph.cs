@@ -365,10 +365,24 @@ namespace Chaos.src.Ethena
         protected ISet<Point> IdentifiedCluster1;
         protected ISet<Point> IdentifiedCluster2;
 
-        public IImmutableSet<PointCollection> Clusters
+        virtual public IImmutableSet<PointCollection> Clusters
         {
             get {
                 return Basic.ImmuteSet<PointCollection>(EvolvingClusters);
+            }
+        }
+
+        virtual public IImmutableSet<Point> ClusterMajor {
+            get {
+                return Basic.ImmuteSet<Point>(IdentifiedCluster1); 
+            }
+        }
+
+        virtual public IImmutableSet<Point> ClusterMinor
+        {
+            get
+            {
+                return Basic.ImmuteSet<Point>(IdentifiedCluster2);
             }
         }
 

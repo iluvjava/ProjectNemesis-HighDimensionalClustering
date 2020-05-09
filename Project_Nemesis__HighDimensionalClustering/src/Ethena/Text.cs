@@ -1,7 +1,9 @@
 ﻿using Chaos.src.Util;
+using MyDatastructure.Maps;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Text;
 using static Chaos.src.Util.SettingsManager;
  
@@ -99,15 +101,82 @@ namespace Chaos.src.Ethena
     /// <summary>
     ///     This class cluster text files under a certain directory, and it 
     ///     will just print out the clustering in the end. 
+    ///     
     ///     * This class will treat the list of instances of text as point and 
     ///     feed them to full graph class. 
     /// </summary>
     public class TextFileCluster
     {
-        FullGraphClustering ClusterIdentifier; 
-        
-        
+        public FullGraphClustering ClusterIdentifier {get; protected set;}
+        public string Dir { get; protected set; }
+        Text[] Texts;
+
+        public TextFileCluster(string directory)
+        {
+            DirectoryInfo dinfo = new DirectoryInfo(directory);
+            if (dinfo.Exists)
+            {
+                throw new ArgumentException(); 
+            }
+            this.Dir = directory; 
+            IDictionary<string, string> FilesAndContent = Basic.GetContentForAllFiles(directory, false , "txt");
+
+            ConstructorHelper(FilesAndContent);
+        }
+
+        public TextFileCluster(IDictionary<string, string> FilesAndContent)
+        {
+            ConstructorHelper(FilesAndContent); 
+        }
+
+        protected void ConstructorHelper(IDictionary<string, string> FilesAndContent)
+        {
+            List<Text> ListofTexts = new List<Text>();
+            foreach (KeyValuePair<string, string> kvp in FilesAndContent)
+            {
+                ListofTexts.Add(new Text(kvp.Value, kvp.Key));
+            }
+            Texts = ListofTexts.ToArray();
+
+            Point[] TextAsPoints = Array.ConvertAll(Texts, item => (Point)item); 
+
+            ClusterIdentifier = new FullGraphClustering(TextAsPoints);
+        }
+
+        public override string ToString()
+        {
+            return base.ToString();
+        }
     }
 
-   
+    /// <summary>
+    ///     This class is for reporting the results found by the 
+    ///     TextFileCluster in a more acceptable manner. 
+    ///     
+    ///     This class should be interfacing with the outside really. 
+    /// </summary>
+    public class TextFileClusterReporter
+    {
+        protected TextFileCluster FileCluster;
+
+        public TextFileClusterReporter(IDictionary<string, string> FileAndContent)
+        {
+            FileCluster = new TextFileCluster(FileAndContent);
+        }
+
+        public TextFileClusterReporter(string directory)
+        {
+            FileCluster = new TextFileCluster(directory);
+        }
+
+
+        /// <summary>
+        ///     Generate a report on the 2 clustering of files names. 
+        /// </summary>
+        /// <returns></returns>
+        public string GetReport()
+        {
+            return null;
+        }
+    }
 }

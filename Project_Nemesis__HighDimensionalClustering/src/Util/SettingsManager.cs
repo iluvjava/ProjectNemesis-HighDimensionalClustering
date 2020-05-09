@@ -35,11 +35,27 @@ namespace Chaos.src.Util
 
         public static MatrixGenFxn DisPatchMatrixGenFxn()
         {
-            MatrixGenFxn handler = delegate(string s) 
+            switch (MtxType)
             {
-                return GetTM27(s);
-            };
-            return handler;
+                case MatrixType.Tm27:
+                {
+                    MatrixGenFxn handler = delegate (string s)
+                    {
+                        return GetTM27(s);
+                    };
+                    return handler;
+                }
+                case MatrixType.SecondOrder27:
+                {
+                    MatrixGenFxn handler = delegate (string s)
+                    {
+                        return Get2ndTM27(s);
+                    };
+                    return handler;
+                }
+            }
+
+            throw new Exception("This shouldn't happen, please go check source codes.");
         }
 
 

@@ -61,7 +61,7 @@ namespace Chaos.src.Ethena
 
             if (points[0] is Text)
             {
-                Text[] T = points as Text[];
+                Text[] T = Array.ConvertAll(points, item => (Text)item);
                 return Text.GetCentroidAmong(T);
             }
 
@@ -174,9 +174,5 @@ namespace Chaos.src.Ethena
         }
 
     }
-
-
-
-
 
 }
