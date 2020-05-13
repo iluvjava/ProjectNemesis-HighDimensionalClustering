@@ -33,6 +33,34 @@ namespace Chaos.src.Util
 
         }
 
+        /// <summary>
+        ///     Let the setting manager dispatch a delegate 
+        ///     that generate TM27 Transition Matrix. 
+        /// </summary>
+        public static void SetTM27ForTransitionMatrix()
+        {
+            MtxType = MatrixType.Tm27; 
+        }
+
+        /// <summary>
+        ///     Let the setting manager dispatches a delegate 
+        ///     that generate 2nd27TM matrix. 
+        /// </summary>
+        public static void Set2ndTM27ForTransitionMatrix()
+        {
+            MtxType = MatrixType.SecondOrder27; 
+        }
+
+        public static void SetDisFxnTo2Norm()
+        {
+            MtxMetric = MatrixMetric.TwoNorm; 
+        }
+
+        public static void SetDisFxnToVecNorm()
+        {
+            MtxMetric = MatrixMetric.VecOneNorm;
+        }
+
         public static MatrixGenFxn DisPatchMatrixGenFxn()
         {
             switch (MtxType)

@@ -38,22 +38,18 @@ namespace Guardian
         {
             WriteLine($"Files and Content Sizes:{FilesAndContent.Count} ");
 
-            TextFileCluster tfc = new TextFileCluster(FilesAndContent);
-            FullGraphClustering fgc = tfc.ClusterIdentifier;
-            IImmutableSet<Point> FirstCluster = fgc.ClusterMajor;
-            IImmutableSet<Point> SecondCluster = fgc.ClusterMinor;
+            TextFileClusterReporter tfr = new TextFileClusterReporter(FilesAndContent);
+            WriteLine(tfr.GetReport());
 
-            WriteLine("-----------------------This is the first cluster: -----------------------");
-            foreach (Point p in FirstCluster)
-            {
-                WriteLine((p as Text).file_name); 
-            }
-            WriteLine("----------------------This is the second cluster: -----------------------");
-            foreach (Point p in SecondCluster)
-            {
-                WriteLine((p as Text).file_name); 
-            }
+            WriteLine("*Let's use a vectorized metric for it. ");
+            SettingsManager.SetDisFxnToVecNorm();
+            tfr = new TextFileClusterReporter(FilesAndContent);
+            WriteLine(tfr.GetReport());
 
+            WriteLine("* Let's use the second order transition matrix: ");
+            SettingsManager.Set2ndTM27ForTransitionMatrix();
+            tfr = new TextFileClusterReporter(FilesAndContent);
+            WriteLine(tfr.GetReport()); 
 
         }
     }

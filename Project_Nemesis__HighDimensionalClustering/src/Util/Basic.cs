@@ -140,7 +140,7 @@ namespace Chaos.src.Util
         /// <returns>
         ///     A double, which is gotten from the converted string. 
         /// </returns>
-        public static double[,] Get2ndTM27(string s) // TODO: NEEDS TESTING FOR THIS METHOD BEFORE DEPLOYMENT. 
+        public static double[,] Get2ndTM27(string s) // UNDONE: Casually Tested
         {
             int[,] res = new int[27*27, 27*27];
             IList<char> charlist = FilterByAlphebeticalChars(s);

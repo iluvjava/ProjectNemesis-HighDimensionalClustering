@@ -7,9 +7,10 @@ namespace Project_Nemesis__HighDimensionalClustering.src.Util
 {
 
     /// <summary>
-    ///     A class to get beautifully formatt text of outputing to the console. 
+    ///     A class that is going to log stuff into the console. and stores some 
+    ///     settings on rules of logging too. 
     /// </summary>
-    class ConsoleFomatterPrint
+    class ConsoleLog
     {
 
     }

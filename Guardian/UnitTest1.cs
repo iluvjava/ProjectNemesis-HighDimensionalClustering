@@ -2,6 +2,7 @@ using NUnit.Framework;
 using System.Collections.Generic;
 using static Chaos.src.Util.Basic;
 using System;
+using Chaos.src.Util;
 
 namespace Guardian
 {
@@ -46,14 +47,7 @@ namespace Guardian
         {
             double[,] m = GetTM27(stuff);
             Console.WriteLine("This is the transition matrix. ");
-            for (int I = 0; I < m.GetLength(0); I++)
-            {
-                for (int J = 0; J < m.GetLength(1); J++)
-                {
-                    Console.Out.Write(m[I, J] + " ");
-                }
-                Console.Out.WriteLine();
-            }
+            PrintMatrix(m);
         }
 
         //TODO: TEST THIS
@@ -80,7 +74,31 @@ namespace Guardian
             }
         }
 
+        /// <summary>
+        ///     Test of the 2nd order of the 27 transition matrix is correctly generated. 
+        /// </summary>
+        [TestCase("abcdefghijklmnopqrstuvwxyz")]
+        public void Test2ndTM27(string testString)
+        {
+            SettingsManager.MtxType = MatrixType.SecondOrder27;
+            MatrixGenFxn fxn = SettingsManager.DisPatchMatrixGenFxn();
 
+            double[,] transitionMatrix = fxn(testString);
+            PrintMatrix(transitionMatrix);
+
+        }
+
+        public void PrintMatrix(double[,] m)
+        {
+            for (int I = 0; I < m.GetLength(0); I++)
+            {
+                for (int J = 0; J < m.GetLength(1); J++)
+                {
+                    Console.Out.Write(m[I, J] + " ");
+                }
+                Console.Out.WriteLine();
+            }
+        }
 
     }
 }

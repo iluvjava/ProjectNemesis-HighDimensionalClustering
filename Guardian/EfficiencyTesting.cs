@@ -90,6 +90,7 @@ namespace Guardian
                     () =>
                     {
                         Stopwatch sw = new Stopwatch();
+
                         SpacialPoint ExpectedCenter1 = new SpacialPoint(Mu1), ExpectedCenter2 = new SpacialPoint(Mu2);
 
                         Point[] samples1 = SpacialPoint.NormalRandomPoints(Mu1, 1, SizeofEachCluster);

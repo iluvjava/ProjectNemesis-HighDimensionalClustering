@@ -2,8 +2,10 @@
 using MyDatastructure.Maps;
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Globalization;
 using System.IO;
+using System.Runtime.InteropServices;
 using System.Text;
 using static Chaos.src.Util.SettingsManager;
  
@@ -169,14 +171,32 @@ namespace Chaos.src.Ethena
             FileCluster = new TextFileCluster(directory);
         }
 
-
         /// <summary>
         ///     Generate a report on the 2 clustering of files names. 
         /// </summary>
         /// <returns></returns>
         public string GetReport()
         {
-            return null;
+            StringBuilder sb1 = new StringBuilder("The first clusters of files: \n");
+            FullGraphClustering theFullGraph = FileCluster.ClusterIdentifier;
+            IImmutableSet<Point> clusterMajor = theFullGraph.ClusterMajor;
+            IImmutableSet<Point> clusterMinor = theFullGraph.ClusterMinor;
+
+            // String for first cluster. 
+
+            foreach (Point p in clusterMajor)
+            {
+                Text t = p as Text;
+                sb1.AppendLine($"\t{t.file_name}");
+            }
+            sb1.AppendLine("This is the second cluster of files: ");
+            foreach (Point p in clusterMinor)
+            {
+                Text t = p as Text;
+                sb1.AppendLine($"\t{t.file_name}");
+            }
+
+            return sb1.ToString();
         }
     }
 }
