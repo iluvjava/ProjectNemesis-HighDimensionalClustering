@@ -7,22 +7,34 @@ using static Chaos.src.Util.Basic;
 namespace Chaos.src.Util
 {
     /// <summary>
-    /// Given a string, the function will return a transition matrix 
-    /// for a markov chain, it really depends on the context 
-    /// on which markov chain is returned.
+    ///     Given a string, the function will return a transition matrix 
+    ///     for a markov chain, it really depends on the context 
+    ///     on which markov chain is returned.
     /// </summary>
     /// <param name="s">
-    /// String. 
+    ///     String. 
     /// </param>
     /// <returns>
-    /// A 2d array full of double. 
+    ///     A 2d array full of double. 
     /// </returns>
     public delegate double[,] MatrixGenFxn(string s);
+
+    /// <summary>
+    ///     A function that return the distance between 2 matrices for a 
+    ///     certain metric space. 
+    /// </summary>
+    /// <param name="a">
+    ///     matrix, uniform 2d double array. 
+    /// </param>
+    /// <param name="b">
+    ///     matrix, uniform 2d double array. 
+    /// </param>
+    /// <returns></returns>
     public delegate double MatrixDisFxn(double[,] a, double[,] b);
 
 
     /// <summary>
-    /// Singleton Design. 
+    ///     Singleton Design. 
     /// </summary>
     public class SettingsManager
     {
@@ -111,7 +123,6 @@ namespace Chaos.src.Util
 
             throw new Exception("This shouldn't happen, please go check source codes.");
         }
-
 
 
     }

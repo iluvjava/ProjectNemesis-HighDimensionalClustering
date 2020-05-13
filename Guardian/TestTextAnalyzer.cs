@@ -15,7 +15,10 @@ namespace Guardian
 
     class TestTextAnalyzer
     { 
-        public const string Path = @"C:\Users\victo\source\repos\Math-381-Project-2\data";
+        // public const string Path = @"C:\Users\victo\source\repos\Math-381-Project-2\data";
+        public const string Path = 
+            @"C:\Users\victo\source\repos\ProjectNemesis-HighDimensionalClustering\Project_Nemesis__HighDimensionalClustering\assets";
+        
         IDictionary<string, string> FilesAndContent; 
 
         [SetUp]
@@ -38,10 +41,11 @@ namespace Guardian
         {
             WriteLine($"Files and Content Sizes:{FilesAndContent.Count} ");
 
+            WriteLine("Villena flavor type of matrix and metric. ");
             TextFileClusterReporter tfr = new TextFileClusterReporter(FilesAndContent);
             WriteLine(tfr.GetReport());
 
-            WriteLine("*Let's use a vectorized metric for it. ");
+            WriteLine("* Let's use a vectorized metric for it. ");
             SettingsManager.SetDisFxnToVecNorm();
             tfr = new TextFileClusterReporter(FilesAndContent);
             WriteLine(tfr.GetReport());
@@ -49,7 +53,13 @@ namespace Guardian
             WriteLine("* Let's use the second order transition matrix: ");
             SettingsManager.Set2ndTM27ForTransitionMatrix();
             tfr = new TextFileClusterReporter(FilesAndContent);
-            WriteLine(tfr.GetReport()); 
+            WriteLine(tfr.GetReport());
+
+            WriteLine("Let's change the metric back to 2 norm");
+            SettingsManager.SetDisFxnTo2Norm();
+            tfr = new TextFileClusterReporter(FilesAndContent);
+            WriteLine(tfr.GetReport());
+
 
         }
     }

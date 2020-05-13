@@ -1,0 +1,116 @@
+Test Name:	TestTextClustring
+Test Outcome:	Passed
+Result StandardOutput:	
+Files and Content Sizes:24 
+Villena flavor type of matrix and metric. 
+The first clusters of files: 
+	Fallout_ Equestria - Project Horizons ( 2 - Chapter 2_ Trust ).txt
+	Fallout_ Equestria ( 42 - Chapter Forty_ Sonic Rad-Boom ).txt
+	Fallout_ Equestria ( 15 - Chapter Thirteen_ Voices of the Past ).txt
+	Fallout_ Equestria ( 46 - Chapter Forty-Four_ Galvanize ).txt
+	Fallout_ Equestria - Project Horizons ( 20 - Chapter 20_ Mercy ).txt
+	Fallout_ Equestria ( 21 - Chapter Nineteen_ Betrayal ).txt
+	Fallout_ Equestria - Project Horizons ( 9 - Chapter 9_ Stone ).txt
+	Fallout_ Equestria ( 11 - Chapter Nine_ The Moral of the Story ).txt
+	Fallout_ Equestria - Project Horizons ( 31 - Chapter 31_ Battle ).txt
+	Fallout_ Equestria ( 5 - Chapter Three_ Guidance ).txt
+	Fallout_ Equestria ( 44 - Chapter Forty-Two_ Into Fire and Darkness ).txt
+	Fallout_ Equestria - Project Horizons ( 76 - Chapter 75_ To the Last, part 1 ).txt
+	Fallout_ Equestria - Project Horizons ( 43 - Chapter 43_ Lucidity ).txt
+	Fallout_ Equestria ( 39 - Chapter Thirty-Seven_ The Shadow of the Ministries ).txt
+	Fallout_ Equestria - Project Horizons ( 1 - Chapter 1_ Inception ).txt
+This is the second cluster of files: 
+	Fallout_ Equestria - Project Horizons ( 62 - Chapter 62_ Between the Wolf and the Lion, part 1 ).txt
+	Fallout_ Equestria ( 34 - Chapter Thirty-Two_ Conversations in the Calm Before ).txt
+	Fallout_ Equestria ( 26 - Chapter Twenty-Four_ Dances of Light and Shadow ).txt
+	Fallout_ Equestria - Project Horizons ( 26 - Chapter 26_ Descent ).txt
+	Fallout_ Equestria ( 36 - Chapter Thirty-Four_ Edge of Night ).txt
+	Fallout_ Equestria - Project Horizons ( 59 - Chapter 59_ Turbulence ).txt
+	Fallout_ Equestria - Project Horizons ( 71 - Chapter 70_ Calm ).txt
+	Fallout_ Equestria ( 30 - Chapter Twenty-Eight_ The Hour of the Wolf ).txt
+	Fallout_ Equestria - Project Horizons ( 53 - Chapter 53_ Upgrades ).txt
+
+* Let's use a vectorized metric for it. 
+The first clusters of files: 
+	Fallout_ Equestria - Project Horizons ( 62 - Chapter 62_ Between the Wolf and the Lion, part 1 ).txt
+	Fallout_ Equestria - Project Horizons ( 43 - Chapter 43_ Lucidity ).txt
+	Fallout_ Equestria - Project Horizons ( 53 - Chapter 53_ Upgrades ).txt
+	Fallout_ Equestria - Project Horizons ( 26 - Chapter 26_ Descent ).txt
+	Fallout_ Equestria ( 26 - Chapter Twenty-Four_ Dances of Light and Shadow ).txt
+	Fallout_ Equestria - Project Horizons ( 9 - Chapter 9_ Stone ).txt
+	Fallout_ Equestria - Project Horizons ( 71 - Chapter 70_ Calm ).txt
+	Fallout_ Equestria - Project Horizons ( 76 - Chapter 75_ To the Last, part 1 ).txt
+	Fallout_ Equestria ( 34 - Chapter Thirty-Two_ Conversations in the Calm Before ).txt
+	Fallout_ Equestria - Project Horizons ( 31 - Chapter 31_ Battle ).txt
+	Fallout_ Equestria - Project Horizons ( 20 - Chapter 20_ Mercy ).txt
+	Fallout_ Equestria - Project Horizons ( 59 - Chapter 59_ Turbulence ).txt
+	Fallout_ Equestria - Project Horizons ( 2 - Chapter 2_ Trust ).txt
+	Fallout_ Equestria - Project Horizons ( 1 - Chapter 1_ Inception ).txt
+This is the second cluster of files: 
+	Fallout_ Equestria ( 44 - Chapter Forty-Two_ Into Fire and Darkness ).txt
+	Fallout_ Equestria ( 15 - Chapter Thirteen_ Voices of the Past ).txt
+	Fallout_ Equestria ( 21 - Chapter Nineteen_ Betrayal ).txt
+	Fallout_ Equestria ( 11 - Chapter Nine_ The Moral of the Story ).txt
+	Fallout_ Equestria ( 30 - Chapter Twenty-Eight_ The Hour of the Wolf ).txt
+	Fallout_ Equestria ( 46 - Chapter Forty-Four_ Galvanize ).txt
+	Fallout_ Equestria ( 36 - Chapter Thirty-Four_ Edge of Night ).txt
+	Fallout_ Equestria ( 39 - Chapter Thirty-Seven_ The Shadow of the Ministries ).txt
+	Fallout_ Equestria ( 42 - Chapter Forty_ Sonic Rad-Boom ).txt
+	Fallout_ Equestria ( 5 - Chapter Three_ Guidance ).txt
+
+* Let's use the second order transition matrix: 
+The first clusters of files: 
+	Fallout_ Equestria - Project Horizons ( 26 - Chapter 26_ Descent ).txt
+	Fallout_ Equestria - Project Horizons ( 20 - Chapter 20_ Mercy ).txt
+	Fallout_ Equestria - Project Horizons ( 59 - Chapter 59_ Turbulence ).txt
+	Fallout_ Equestria - Project Horizons ( 62 - Chapter 62_ Between the Wolf and the Lion, part 1 ).txt
+	Fallout_ Equestria - Project Horizons ( 76 - Chapter 75_ To the Last, part 1 ).txt
+	Fallout_ Equestria - Project Horizons ( 31 - Chapter 31_ Battle ).txt
+	Fallout_ Equestria - Project Horizons ( 43 - Chapter 43_ Lucidity ).txt
+	Fallout_ Equestria - Project Horizons ( 2 - Chapter 2_ Trust ).txt
+	Fallout_ Equestria - Project Horizons ( 9 - Chapter 9_ Stone ).txt
+	Fallout_ Equestria ( 5 - Chapter Three_ Guidance ).txt
+	Fallout_ Equestria - Project Horizons ( 71 - Chapter 70_ Calm ).txt
+	Fallout_ Equestria - Project Horizons ( 1 - Chapter 1_ Inception ).txt
+	Fallout_ Equestria - Project Horizons ( 53 - Chapter 53_ Upgrades ).txt
+This is the second cluster of files: 
+	Fallout_ Equestria ( 34 - Chapter Thirty-Two_ Conversations in the Calm Before ).txt
+	Fallout_ Equestria ( 39 - Chapter Thirty-Seven_ The Shadow of the Ministries ).txt
+	Fallout_ Equestria ( 44 - Chapter Forty-Two_ Into Fire and Darkness ).txt
+	Fallout_ Equestria ( 21 - Chapter Nineteen_ Betrayal ).txt
+	Fallout_ Equestria ( 15 - Chapter Thirteen_ Voices of the Past ).txt
+	Fallout_ Equestria ( 46 - Chapter Forty-Four_ Galvanize ).txt
+	Fallout_ Equestria ( 30 - Chapter Twenty-Eight_ The Hour of the Wolf ).txt
+	Fallout_ Equestria ( 26 - Chapter Twenty-Four_ Dances of Light and Shadow ).txt
+	Fallout_ Equestria ( 36 - Chapter Thirty-Four_ Edge of Night ).txt
+	Fallout_ Equestria ( 42 - Chapter Forty_ Sonic Rad-Boom ).txt
+	Fallout_ Equestria ( 11 - Chapter Nine_ The Moral of the Story ).txt
+
+Let's change the metric back to 2 norm
+The first clusters of files: 
+	Fallout_ Equestria - Project Horizons ( 9 - Chapter 9_ Stone ).txt
+	Fallout_ Equestria - Project Horizons ( 62 - Chapter 62_ Between the Wolf and the Lion, part 1 ).txt
+	Fallout_ Equestria - Project Horizons ( 71 - Chapter 70_ Calm ).txt
+	Fallout_ Equestria - Project Horizons ( 53 - Chapter 53_ Upgrades ).txt
+	Fallout_ Equestria - Project Horizons ( 59 - Chapter 59_ Turbulence ).txt
+	Fallout_ Equestria - Project Horizons ( 31 - Chapter 31_ Battle ).txt
+	Fallout_ Equestria - Project Horizons ( 43 - Chapter 43_ Lucidity ).txt
+	Fallout_ Equestria - Project Horizons ( 2 - Chapter 2_ Trust ).txt
+	Fallout_ Equestria - Project Horizons ( 26 - Chapter 26_ Descent ).txt
+	Fallout_ Equestria - Project Horizons ( 76 - Chapter 75_ To the Last, part 1 ).txt
+	Fallout_ Equestria - Project Horizons ( 20 - Chapter 20_ Mercy ).txt
+	Fallout_ Equestria - Project Horizons ( 1 - Chapter 1_ Inception ).txt
+	Fallout_ Equestria ( 5 - Chapter Three_ Guidance ).txt
+This is the second cluster of files: 
+	Fallout_ Equestria ( 30 - Chapter Twenty-Eight_ The Hour of the Wolf ).txt
+	Fallout_ Equestria ( 15 - Chapter Thirteen_ Voices of the Past ).txt
+	Fallout_ Equestria ( 44 - Chapter Forty-Two_ Into Fire and Darkness ).txt
+	Fallout_ Equestria ( 26 - Chapter Twenty-Four_ Dances of Light and Shadow ).txt
+	Fallout_ Equestria ( 11 - Chapter Nine_ The Moral of the Story ).txt
+	Fallout_ Equestria ( 36 - Chapter Thirty-Four_ Edge of Night ).txt
+	Fallout_ Equestria ( 21 - Chapter Nineteen_ Betrayal ).txt
+	Fallout_ Equestria ( 34 - Chapter Thirty-Two_ Conversations in the Calm Before ).txt
+	Fallout_ Equestria ( 46 - Chapter Forty-Four_ Galvanize ).txt
+	Fallout_ Equestria ( 42 - Chapter Forty_ Sonic Rad-Boom ).txt
+	Fallout_ Equestria ( 39 - Chapter Thirty-Seven_ The Shadow of the Ministries ).txt
+
