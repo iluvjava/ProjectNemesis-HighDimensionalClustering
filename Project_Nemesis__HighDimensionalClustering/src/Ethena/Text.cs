@@ -1,12 +1,14 @@
 ﻿using Chaos.src.Util;
 using MyDatastructure.Maps;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Globalization;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading.Tasks;
 using static Chaos.src.Util.SettingsManager;
  
 
@@ -131,13 +133,29 @@ namespace Chaos.src.Ethena
             ConstructorHelper(FilesAndContent); 
         }
 
-        protected void ConstructorHelper(IDictionary<string, string> FilesAndContent)
+        protected void ConstructorHelper(IDictionary<string, string> FilesAndContent) // UNDONE: HOW TO Paralize???
         {
+            List<Task<Text>> ListofTasks = new List<Task<Text>>();
             List<Text> ListofTexts = new List<Text>();
+
             foreach (KeyValuePair<string, string> kvp in FilesAndContent)
             {
-                ListofTexts.Add(new Text(kvp.Value, kvp.Key));
+                Task<Text> t = new Task<Text>
+                        (
+                            () =>
+                            {
+                                return new Text(kvp.Value, kvp.Key);
+                            }
+                        );
+                ListofTasks.Add(t);
+                t.Start();
             }
+
+            foreach (Task<Text> T in ListofTasks)
+            {
+                ListofTexts.Add(T.Result);
+            }
+
             Texts = ListofTexts.ToArray();
 
             Point[] TextAsPoints = Array.ConvertAll(Texts, item => (Point)item); 
@@ -199,4 +217,6 @@ namespace Chaos.src.Ethena
             return sb1.ToString();
         }
     }
+
+    
 }

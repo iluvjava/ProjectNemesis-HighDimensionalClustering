@@ -6,6 +6,7 @@ using System.IO;
 using System.Collections.Immutable;
 using MathNet.Numerics.Optimization;
 using System.Globalization;
+using System.Threading.Tasks;
 
 namespace Chaos.src.Util
 {
@@ -33,7 +34,7 @@ namespace Chaos.src.Util
         /// <returns>
         /// A list of characters
         /// </returns>
-        public static IList<char> FilterByAlphebeticalChars(string arg)
+        public static IList<char> FilterByAlphebeticalChars(string arg) // UNDONE: Paralize? 
         {
             IList<char> charStream = new List<char>();
             arg = arg.ToLower();
@@ -89,19 +90,20 @@ namespace Chaos.src.Util
             IDictionary<String, String> content = new SortedDictionary<String, String>();
             try 
             {
-                foreach (FileInfo eachFile in files)
+                Parallel.ForEach(files, (eachFile) =>
                 {
-                    String name = eachFile.Name;
-                    using (StreamReader sr = File.OpenText(eachFile.FullName)) 
-                    {
-                        StringBuilder sb = new StringBuilder();
-                        sb.Append(sr.ReadToEnd());
-                        content[name] = sb.ToString();
-                    } 
-                }
+                   String name = eachFile.Name;
+                   using (StreamReader sr = File.OpenText(eachFile.FullName))
+                   {
+                       StringBuilder sb = new StringBuilder();
+                       sb.Append(sr.ReadToEnd());
+                       content[name] = sb.ToString();
+                   }
+               });
             }
             catch (IOException e)
             {
+                Console.WriteLine(e);
                 return null;
             }
             return content;
@@ -129,7 +131,7 @@ namespace Chaos.src.Util
 
             double[,] normalizedFreqMatrix = NormalizeAllRow(res);
             return normalizedFreqMatrix;
-        }
+        } //UNDONE: Paralize?
 
         /// <summary>
         ///     A 27 character transition matrix, second order. 
@@ -140,7 +142,7 @@ namespace Chaos.src.Util
         /// <returns>
         ///     A double, which is gotten from the converted string. 
         /// </returns>
-        public static double[,] Get2ndTM27(string s) // UNDONE: Casually Tested
+        public static double[,] Get2ndTM27(string s) // UNDONE: Paralize?
         {
             int[,] res = new int[27*27, 27*27];
             IList<char> charlist = FilterByAlphebeticalChars(s);
