@@ -24,7 +24,8 @@ namespace Guardian
         [SetUp]
         public void SetThingsup()
         {
-            // Check if path exists and has file I guess? 
+            // Check if path exists and has file I guess?
+
             DirectoryInfo dirinfo = new DirectoryInfo(Path);
             if (!dirinfo.Exists)
             {

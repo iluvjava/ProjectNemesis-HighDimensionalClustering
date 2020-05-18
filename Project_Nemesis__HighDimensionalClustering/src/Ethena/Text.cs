@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
@@ -135,32 +136,18 @@ namespace Chaos.src.Ethena
 
         protected void ConstructorHelper(IDictionary<string, string> FilesAndContent) // UNDONE: HOW TO Paralize???
         {
-            List<Task<Text>> ListofTasks = new List<Task<Text>>();
-            List<Text> ListofTexts = new List<Text>();
+            
+            string[] listOfFileNames = FilesAndContent.Keys.ToArray();
+            string[] listOfFileContent = FilesAndContent.Values.ToArray();
+            Point[] listOfPoints = new Point[listOfFileNames.Length];
 
-            foreach (KeyValuePair<string, string> kvp in FilesAndContent)
-            {
-                Task<Text> t = new Task<Text>
-                        (
-                            () =>
-                            {
-                                return new Text(kvp.Value, kvp.Key);
-                            }
-                        );
-                ListofTasks.Add(t);
-                t.Start();
-            }
+            Parallel.For(0, listOfFileContent.Length,
+                    (I) => {
+                        listOfPoints[I] = new Text(listOfFileContent[I], listOfFileNames[I]);
+                    }
+                );
 
-            foreach (Task<Text> T in ListofTasks)
-            {
-                ListofTexts.Add(T.Result);
-            }
-
-            Texts = ListofTexts.ToArray();
-
-            Point[] TextAsPoints = Array.ConvertAll(Texts, item => (Point)item); 
-
-            ClusterIdentifier = new FullGraphClustering(TextAsPoints);
+            ClusterIdentifier = new FullGraphClustering(listOfPoints);
         }
 
         public override string ToString()

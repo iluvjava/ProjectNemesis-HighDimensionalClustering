@@ -90,7 +90,7 @@ namespace Chaos.src.Util
             IDictionary<String, String> content = new SortedDictionary<String, String>();
             try 
             {
-                Parallel.ForEach(files, (eachFile) =>
+                foreach(FileInfo eachFile in files)
                 {
                    String name = eachFile.Name;
                    using (StreamReader sr = File.OpenText(eachFile.FullName))
@@ -99,7 +99,7 @@ namespace Chaos.src.Util
                        sb.Append(sr.ReadToEnd());
                        content[name] = sb.ToString();
                    }
-               });
+               }
             }
             catch (IOException e)
             {
