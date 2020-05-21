@@ -61,7 +61,6 @@ namespace Guardian
             tfr = new TextFileClusterReporter(FilesAndContent);
             WriteLine(tfr.GetReport());
 
-
         }
     }
 }

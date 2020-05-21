@@ -21,7 +21,7 @@ namespace Chaos
 
         static IDictionary<string, string> FilesAndContent;
 
-        public void SetThingsup()
+        public static void SetThingsup()
         {
             // Check if path exists and has file I guess?
 
@@ -37,6 +37,8 @@ namespace Chaos
 
         static void Main(string[] args)
         {
+            SetThingsup();
+
             WriteLine($"Files and Content Sizes:{FilesAndContent.Count} ");
 
             WriteLine("Villena flavor type of matrix and metric. ");

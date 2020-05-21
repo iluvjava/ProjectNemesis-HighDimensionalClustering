@@ -187,21 +187,21 @@ namespace Chaos.src.Ethena
 
             // Non parallel 
             {
-                for (int I = 0; I < points.Length; I++)
-                    for (int J = I + 1; J < points.Length; J++)
-                    {
-                        E.Add(new Edge(points[I], points[J]));
-                    }
+                // for (int I = 0; I < points.Length; I++)
+                //     for (int J = I + 1; J < points.Length; J++)
+                //     {
+                //         E.Add(new Edge(points[I], points[J]));
+                //     }
             }
             // Parallel 
             {
-                /* EdgesBuffers Buffer = new EdgesBuffers(E);*/
-                /* Parallel.For(0, points.Length, I => {
+                EdgesBuffers Buffer = new EdgesBuffers(E);
+                Parallel.For(0, points.Length, I => {
                      for(int J = I + 1; J < points.Length; J++)
                      {
                          Buffer.LockAdd(new Edge(points[I], points[J])); 
                      }
-                 });*/
+                 });
             }
 
             max_partition = EstablishMST();
@@ -220,7 +220,7 @@ namespace Chaos.src.Ethena
 
             public void LockAdd(Edge e)
             {
-                lock(this)
+                lock(Holder)
                 Holder.Add(e);
             }
         
