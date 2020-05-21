@@ -40,10 +40,7 @@ namespace Chaos.src.Util
     {
         public static MatrixMetric MtxMetric = MatrixMetric.TwoNorm;
         public static MatrixType MtxType = MatrixType.Tm27;
-        private SettingsManager()
-        {
-
-        }
+       
 
         /// <summary>
         ///     Let the setting manager dispatch a delegate 

@@ -10,6 +10,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
+using TaskRunners;
 using static Chaos.src.Util.SettingsManager;
  
 
@@ -136,18 +137,24 @@ namespace Chaos.src.Ethena
 
         protected void ConstructorHelper(IDictionary<string, string> FilesAndContent) // UNDONE: HOW TO Paralize???
         {
-            
-            string[] listOfFileNames = FilesAndContent.Keys.ToArray();
-            string[] listOfFileContent = FilesAndContent.Values.ToArray();
-            Point[] listOfPoints = new Point[listOfFileNames.Length];
 
-            Parallel.For(0, listOfFileContent.Length,
-                    (I) => {
-                        listOfPoints[I] = new Text(listOfFileContent[I], listOfFileNames[I]);
-                    }
-                );
+            Queue<Task<Point>> tasks = new Queue<Task<Point>>();
 
-            ClusterIdentifier = new FullGraphClustering(listOfPoints);
+            foreach (KeyValuePair<string, string> kvp in FilesAndContent)
+            {
+                tasks.Enqueue(
+                        new Task<Point>(
+                                () => 
+                                {
+                                    return new Text(kvp.Value, kvp.Key);
+                                }
+                            )
+                    );
+            }
+
+            QueueBasedTaskRunner<Point> runner = new QueueBasedTaskRunner<Point>(tasks);
+            runner.RunParallel();
+            ClusterIdentifier = new FullGraphClustering(runner.GetResult().ToArray());
         }
 
         public override string ToString()

@@ -19,10 +19,6 @@ namespace Chaos.src.Util
 
         public static bool Verbalize = false; // whether to print a lot of stuff to the console. 
 
-        private Basic()
-        {
-            // Don't use instances. 
-        }
 
         /// <summary>
         /// Prepare the string for the transition matrices. 
