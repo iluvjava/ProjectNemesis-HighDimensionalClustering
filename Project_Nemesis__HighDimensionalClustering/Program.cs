@@ -13,6 +13,23 @@ using static System.Console;
 
 namespace Chaos
 {
+    /// <summary>
+    ///     Things to establish: 
+    ///     1. File Directory
+    ///         * No identifier, should always be the first parameters.
+    ///     2. File Post fix, optional, txt by default. 
+    ///         * p: simple string
+    ///     3. Recursive or not
+    ///         * r (single letter by itself to indicate recursive search)
+    ///     4. MatrixTypes
+    ///         *mt: ()
+    ///     5. MatrixMetricTypes
+    ///         *mm: ()
+    ///     * A help command. 
+    ///         *help (by it self, no other things at all)
+    ///     The user inputs: 
+    ///         [file directory][space][filepostfix:Should be text files; optional][-r: recursive]
+    /// </summary>
     class Program
     {
 
@@ -63,9 +80,14 @@ namespace Chaos
             WriteLine(tfr.GetReport());
             */
 
-            CancellationTokenSource cts = ConsoleLog.DisplayLoadingBard();
-            Thread.Sleep(10000);
-            cts.Cancel();
+            /*
+                CancellationTokenSource cts = ConsoleLog.DisplayLoadingBard();
+                Thread.Sleep(10000);
+                cts.Cancel();
+            */
+
+            string UserInputs = ConsoleStuff.GetUserInput("Give me a file directory", @"((?:[^/]*\/)*)(.*)");
+
 
         }
 

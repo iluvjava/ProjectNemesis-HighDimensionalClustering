@@ -11,8 +11,10 @@ using System.Threading.Tasks;
 namespace Chaos.src.Util
 {
     /// <summary>
-    /// Stores all the fragments of functions that are going to be needed 
-    /// for computing stuff. 
+    ///     Stores all the fragments of functions that are going to be needed 
+    ///     for computing stuff. 
+    ///     
+    ///     * I don't know why this class is not static... 
     /// </summary>
     public class Basic
     {
