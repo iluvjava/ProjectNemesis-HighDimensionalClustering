@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using static System.Console;
@@ -65,37 +66,45 @@ namespace Chaos
         static void Main(string[] args)
         {
             /*
-            SetThingsup();
+                SetThingsup();
 
-            WriteLine($"Files and Content Sizes:{FilesAndContent.Count} ");
+                WriteLine($"Files and Content Sizes:{FilesAndContent.Count} ");
 
-            WriteLine("Villena flavor type of matrix and metric. ");
-            TextFileClusterReporter tfr = new TextFileClusterReporter(FilesAndContent);
-            WriteLine(tfr.GetReport());
+                WriteLine("Villena flavor type of matrix and metric. ");
+                TextFileClusterReporter tfr = new TextFileClusterReporter(FilesAndContent);
+                WriteLine(tfr.GetReport());
 
-            WriteLine("* Let's use a vectorized metric for it. ");
-            SettingsManager.SetDisFxnToVecNorm();
-            tfr = new TextFileClusterReporter(FilesAndContent);
-            WriteLine(tfr.GetReport());
+                WriteLine("* Let's use a vectorized metric for it. ");
+                SettingsManager.SetDisFxnToVecNorm();
+                tfr = new TextFileClusterReporter(FilesAndContent);
+                WriteLine(tfr.GetReport());
 
-            WriteLine("* Let's use the second order transition matrix: ");
-            SettingsManager.Set2ndTM27ForTransitionMatrix();
-            tfr = new TextFileClusterReporter(FilesAndContent);
-            WriteLine(tfr.GetReport());
+                WriteLine("* Let's use the second order transition matrix: ");
+                SettingsManager.Set2ndTM27ForTransitionMatrix();
+                tfr = new TextFileClusterReporter(FilesAndContent);
+                WriteLine(tfr.GetReport());
 
-            WriteLine("Let's change the metric back to 2 norm");
-            SettingsManager.SetDisFxnTo2Norm();
-            tfr = new TextFileClusterReporter(FilesAndContent);
-            WriteLine(tfr.GetReport());
+                WriteLine("Let's change the metric back to 2 norm");
+                SettingsManager.SetDisFxnTo2Norm();
+                tfr = new TextFileClusterReporter(FilesAndContent);
+                WriteLine(tfr.GetReport());
             */
-
             /*
                 CancellationTokenSource cts = ConsoleLog.DisplayLoadingBard();
                 Thread.Sleep(10000);
                 cts.Cancel();
             */
+            
+            string UserInputs = ConsoleInteract.
+                GetUserInput("Give me a file directory",
+                @"^""((?:[^/]*\/)*)(.*)"" (p:\w+\s*|r\s*|tm:\w+\s*|mm:\w+\s*)*$");
 
-            string UserInputs = ConsoleStuff.GetUserInput("Give me a file directory", @"((?:[^/]*\/)*)(.*)");
+            IDictionary<string, string> inputs = InterpParameters(UserInputs)
+            foreach(KeyValuePair<string, string> kvp in inputs)
+            {
+                Console.WriteLine($"{kvp.Key}: {kvp.Value}");
+            }
+            Console.ReadKey();
         }
 
         /// <summary>
@@ -103,13 +112,12 @@ namespace Chaos
         /// </summary>
         static void PrintWelcomeScreen()
         {
-            
             return;
         }
 
 
         /// <summary>
-        ///     
+        ///     This function will interpret the parameters from the function. 
         /// </summary>
         /// <param name="userInputs">
         ///     Inputs matches the regex 
@@ -121,26 +129,21 @@ namespace Chaos
         {
             IDictionary<string, string> Res = new Dictionary<string, string>();
             string[] Splited = userInputs.Split();
-            Res["dir"] = Splited[0].Substring(1, Splited[0].Length - 1); // Quotation marks!
+            Res["dir"] = Splited[0].Substring(1, Splited[0].Length - 2);
             for (int I = 1; I < Splited.Length; I++)
             {
                 string Token = Splited[I];
                 if (Token.Equals("r"))
                 {
                     Res[Token] = Token;
-
                 }
                 else
                 {
-                    string[] TokenSplitted = Token.Split();
-                    Res[TokenSplitted[0]] = Res[TokenSplitted[1]];
+                    string[] TokenSplitted = Token.Split(':');
+                    Res[TokenSplitted[0]] = TokenSplitted[1];
                 }
-
             }
             return Res;
         }
-
     }
-
-
 }

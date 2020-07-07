@@ -52,7 +52,7 @@ namespace Project_Nemesis__HighDimensionalClustering.src.Util
         }
     }
 
-    static class ConsoleStuff
+    static class ConsoleInteract
     {
 
         /// <summary>
@@ -70,6 +70,7 @@ namespace Project_Nemesis__HighDimensionalClustering.src.Util
             while (!Regex.IsMatch(s, patterns))
             {
                 WriteLine(inputInstructions);
+                s = ReadLine();
             };
             return s;
         }

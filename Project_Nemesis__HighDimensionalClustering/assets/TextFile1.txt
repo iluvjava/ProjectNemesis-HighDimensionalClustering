@@ -1,0 +1,10 @@
+﻿Welcome to Ａ Natural Language Processing App. 
+This App reads the files from a directory and classify them into 2 groups. 
+It uses K-Minimium Spanning Forests and 2nd Order Transition Matrix to accomplish it. 
+---
+The inputs are consisted of tokens, the first one must be the file directory enclosed in quotation marks. 
+"file/file/file"
+
+And then you can add other tokens in any order representing parameters and their value, separated by ":" each tokens are separated by spaces. 
+
+Parameters List and Their Values: 
