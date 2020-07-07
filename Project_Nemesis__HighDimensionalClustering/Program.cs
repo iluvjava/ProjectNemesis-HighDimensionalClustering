@@ -16,19 +16,28 @@ namespace Chaos
     /// <summary>
     ///     Things to establish: 
     ///     1. File Directory
-    ///         * No identifier, should always be the first parameters.
+    ///         * No identifier, should always be the first parameters, should be in quotes if there  
+    ///         are spaces in it. 
     ///     2. File Post fix, optional, txt by default. 
     ///         * p: simple string
     ///     3. Recursive or not
     ///         * r (single letter by itself to indicate recursive search)
     ///     4. MatrixTypes
-    ///         *mt: ()
+    ///         *mt: (tm27, 2ndtm27)
     ///     5. MatrixMetricTypes
-    ///         *mm: ()
+    ///         *mm: (vec, norm2)
     ///     * A help command. 
     ///         *help (by it self, no other things at all)
-    ///     The user inputs: 
-    ///         [file directory][space][filepostfix:Should be text files; optional][-r: recursive]
+    ///     Regex Description: 
+    ///         "((?:[^/]*\/)*)(.*)" (p:\w+\s*|r\s*|mt:\w+\s*|mm:\w+\s*)*
+    ///     The user inputs:
+    ///         Parse, get all specified parameters and it's value from the user. 
+    ///         
+    ///     While(true)
+    ///         get
+    ///         interpret
+    ///         do
+    ///     
     /// </summary>
     class Program
     {
@@ -87,8 +96,48 @@ namespace Chaos
             */
 
             string UserInputs = ConsoleStuff.GetUserInput("Give me a file directory", @"((?:[^/]*\/)*)(.*)");
+        }
+
+        /// <summary>
+        ///     print the welcome screen and help information for the user. 
+        /// </summary>
+        static void PrintWelcomeScreen()
+        {
+            
+            return;
+        }
 
 
+        /// <summary>
+        ///     
+        /// </summary>
+        /// <param name="userInputs">
+        ///     Inputs matches the regex 
+        /// </param>
+        /// <returns>
+        ///     Params |--> Values. 
+        /// </returns>
+        static IDictionary<string, string> InterpParameters(string userInputs)
+        {
+            IDictionary<string, string> Res = new Dictionary<string, string>();
+            string[] Splited = userInputs.Split();
+            Res["dir"] = Splited[0].Substring(1, Splited[0].Length - 1); // Quotation marks!
+            for (int I = 1; I < Splited.Length; I++)
+            {
+                string Token = Splited[I];
+                if (Token.Equals("r"))
+                {
+                    Res[Token] = Token;
+
+                }
+                else
+                {
+                    string[] TokenSplitted = Token.Split();
+                    Res[TokenSplitted[0]] = Res[TokenSplitted[1]];
+                }
+
+            }
+            return Res;
         }
 
     }
