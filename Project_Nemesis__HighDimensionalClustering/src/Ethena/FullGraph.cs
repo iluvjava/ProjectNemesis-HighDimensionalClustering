@@ -185,14 +185,6 @@ namespace Chaos.src.Ethena
                 W[points[I]] = I; // reverse map
             }
 
-            // Non parallel 
-            {
-                // for (int I = 0; I < points.Length; I++)
-                //     for (int J = I + 1; J < points.Length; J++)
-                //     {
-                //         E.Add(new Edge(points[I], points[J]));
-                //     }
-            }
             // Parallel 
             {
                 EdgesBuffers Buffer = new EdgesBuffers(E);
@@ -344,6 +336,160 @@ namespace Chaos.src.Ethena
         }
 
     }
+    /// <summary>
+    ///     New and improved class that can handle clustering more than 2 clusters. 
+    ///     * Cluster all the poitn as an instance of: PointCollection. 
+    ///     TODO: Incorperates this
+    /// </summary>
+    public class KMinSpanningTree {
+
+        protected SortedSet<Edge> E; // Edges soted by weight
+        protected SortedSet<Edge> ChosenE;  // Edges Chosen by Kruskal sorted by weight. 
+        // The index 0 is always one, because before we run kruskal, all partitions are 1 vertex with size 1. 
+        protected IDictionary<int, Point> Idx_V;
+        protected IDictionary<Point, int> V_Idx;
+        protected int Threshold;// The maximum size of the clusters.  
+        protected SortedSet<PointCollection> KComponents;
+
+        /// <summary>
+        ///     Set and get the maximum size of the cluters for the full graph. 
+        /// </summary>
+        public int ClusterSizeThreshold {
+            get {
+                return Threshold;
+            }
+            set {
+                int Upper = (int)(Idx_V.Count / 2.0), Lower = 2;
+                if (value <= Upper && value >= Lower)
+                {
+                    Threshold = value;
+                }
+                else
+                {
+                    if (value < Lower) Threshold = Lower;
+                    else Threshold = Upper;
+                }
+            }
+        }
+
+        public IImmutableSet<Edge> ChosenEdges {
+            get {
+                return Basic.ImmuteSet<Edge>(ChosenE);
+            }
+        }
+
+        public IImmutableSet<PointCollection> KSpanningTree {
+            get {
+                return Basic.ImmuteSet<PointCollection>(KComponents);
+            }
+        }
+
+        public KMinSpanningTree(Point[] points, int ClusterMaxSize = -1)
+        {
+            Idx_V = new SortedDictionary<int, Point>();
+            E = new SortedSet<Edge>();        // Whther the edge is included in the MSt or not. 
+            V_Idx = new Dictionary<Point, int>(); // hashed, order is lost in the reverse map. 
+            // Chosen E established in EstablisheMST method. 
+
+            for (int I = 0; I < points.Length; I++)
+            {
+                Idx_V[I] = points[I]; // index to vertex
+                V_Idx[points[I]] = I; // reverse map
+            }
+
+            // Parallel 
+            {
+                EdgesBuffers Buffer = new EdgesBuffers(E);
+                Parallel.For(0, points.Length, I => {
+                    for (int J = I + 1; J < points.Length; J++)
+                    {
+                        Buffer.LockAdd(new Edge(points[I], points[J]));
+                    }
+                });
+            }
+
+            if (ClusterMaxSize != -1)
+            {
+                this.ClusterSizeThreshold = ClusterMaxSize;   
+            }
+            else
+            { 
+                Threshold = (int)(Idx_V.Count / 2.0); // Default is 2 partition. 
+            }
+        }
+
+        /// <summary>
+        ///     A Recources holder for computing full graphs in parallel. 
+        ///     * Lock the sorted set. 
+        /// </summary>
+        protected class EdgesBuffers
+        {
+            SortedSet<Edge> Holder;
+            public EdgesBuffers(SortedSet<Edge> arg)
+            {
+                Holder = arg;
+            }
+
+            public void LockAdd(Edge e)
+            {
+                lock (Holder)
+                    Holder.Add(e);
+            }
+
+        }
+
+        /// <summary>
+        ///     Try and join K-Minimum Spanning Tree such that all connected components are 
+        ///     having a size less than the given threshold. 
+        /// </summary>
+        public virtual void KMinKruskal()
+        {
+            // mapping integer representative to the partition size. 
+            IDictionary<int, int> ComponentSizes = new SortedDictionary<int, int>();
+            
+            // Disjoint set for kruskal.
+            IDisjointSet<Point> ds = new ArrayDisjointSet<Point>();
+            
+            SortedSet<Edge> ChosenEdges = new SortedSet<Edge>();
+            
+            // Maping Component's rerepsentative to partitions of type PointCollection. 
+            SortedDictionary<int, PointCollection> Partitions = new SortedDictionary<int, PointCollection>();
+            
+            // A set of set of points, each represents all vertices that are in the same component. 
+            SortedSet<PointCollection> ClustersSet = new SortedSet<PointCollection>();
+            
+            for (int I = 0; I < Idx_V.Count; I++)
+            {
+                ds.CreateSet(Idx_V[I]);
+                ComponentSizes[I] = 1; // Integer representative starts indexing from 1. 
+                PointCollection pc = new PointCollection(Idx_V[I]);
+                Partitions[I] = pc;
+                ClustersSet.Add(pc);
+            }
+            
+            
+            foreach (Edge e in E)
+            {
+                Point u = e.a, v = e.b;
+                if (ds.FindSet(u) == ds.FindSet(v)) continue;
+                int JoinedSize = ComponentSizes[ds.FindSet(u) - 1] + ComponentSizes[ds.FindSet(v) - 1];
+                if (JoinedSize > Threshold) continue;
+                PointCollection P1 = Partitions[ds.FindSet(v) - 1], P2 = Partitions[ds.FindSet(u) - 1];
+                PointCollection JoinedPartition = P1 + P2;
+                ds.Join(u, v);
+                ComponentSizes[ds.FindSet(u) - 1] = JoinedSize;
+                Partitions[ds.FindSet(u) - 1] = JoinedPartition;
+                ClustersSet.Remove(P1);
+                ClustersSet.Remove(P2);
+                ClustersSet.Add(JoinedPartition);
+                ChosenEdges.Add(e);
+            }
+            ChosenE = ChosenEdges;
+            KComponents = ClustersSet;
+        }
+    }
+
+   
 
     /// <summary>
     ///     * Should not accept fewer than 5 points, that is just too small to determine. 

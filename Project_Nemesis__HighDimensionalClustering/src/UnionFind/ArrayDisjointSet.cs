@@ -6,7 +6,8 @@ namespace MyDatastructure.UnionFind
 {
 
     /// <summary>
-    /// Disjoint set implemented by forest of reverse tree in the array. 
+    ///     Disjoint set implemented by forest of reverse tree in the array. 
+    ///     Sorry but Index starts with 1 in this case. 
     /// </summary>
     public class ArrayDisjointSet<T> : IDisjointSet<T>
     {
@@ -154,8 +155,6 @@ namespace MyDatastructure.UnionFind
                 return;
             }
             Forest[rootindexA] = rootindexB;
-            
-            
             disjointset_count--; // UNDONE: regression notes. 
         }
 

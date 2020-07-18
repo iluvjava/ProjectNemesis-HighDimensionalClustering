@@ -50,7 +50,7 @@ namespace Guardian
             PrintMatrix(m);
         }
 
-        //TODO: TEST THIS
+        
         /// <summary>
         /// Make sure the matrix distance is well defined for this .
         /// </summary>

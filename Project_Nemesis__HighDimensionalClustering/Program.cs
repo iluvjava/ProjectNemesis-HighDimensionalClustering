@@ -99,7 +99,7 @@ namespace Chaos
                 GetUserInput("Give me a file directory",
                 @"^""((?:[^/]*\/)*)(.*)"" (p:\w+\s*|r\s*|tm:\w+\s*|mm:\w+\s*)*$");
 
-            IDictionary<string, string> inputs = InterpParameters(UserInputs)
+            IDictionary<string, string> inputs = InterpParameters(UserInputs);
             foreach(KeyValuePair<string, string> kvp in inputs)
             {
                 Console.WriteLine($"{kvp.Key}: {kvp.Value}");
