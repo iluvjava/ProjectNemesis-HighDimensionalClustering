@@ -48,6 +48,18 @@ namespace Chaos.src.Ethena
 
         }
 
+        /// <summary>
+        ///     <para>
+        ///         Using the dynamic type of the inputs arrays of points, call it's desinator
+        ///         and return the centroid of all the points. 
+        ///     </para>
+        /// </summary>
+        /// <param name="points">
+        /// List of points. 
+        /// </param>
+        /// <returns>
+        ///     A point, of the same type as the points in the list. 
+        /// </returns>
         public static Point CentroidOf(Point[] points)
         {
             if (points.Length == 0) throw new Exception("Can't find the centroid of an empty points[]."); 
@@ -76,8 +88,8 @@ namespace Chaos.src.Ethena
     /// </summary>
     public class SpacialPoint : Point
     {
-        double[] coord;
-        int dim;
+        protected double[] coord ;
+        protected int dim;
 
         protected SpacialPoint(int dimension)
         {
@@ -171,6 +183,18 @@ namespace Chaos.src.Ethena
             }
 
             return new SpacialPoint(Basic.EntrywiseAverage(thecoords));
+        }
+
+        /// <summary>
+        ///     Index the number of a certain coordinate. 
+        /// </summary>
+        /// <param name="i"></param>
+        /// <returns></returns>
+        public double this[int i]
+        {
+            get {
+                return coord[i];
+            }
         }
 
     }

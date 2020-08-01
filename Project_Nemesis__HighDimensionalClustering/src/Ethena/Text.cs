@@ -104,6 +104,7 @@ namespace Chaos.src.Ethena
 
     }
 
+    [Obsolete("Replaced by TextFileClassifier")]
     /// <summary>
     ///     This class cluster text files under a certain directory, and it 
     ///     will just print out the clustering in the end. 
@@ -163,12 +164,14 @@ namespace Chaos.src.Ethena
         }
     }
 
+
     /// <summary>
     ///     This class is for reporting the results found by the 
     ///     TextFileCluster in a more acceptable manner. 
     ///     
     ///     This class should be interfacing with the outside really. 
     /// </summary>
+    [Obsolete("Replaced by TextFileClassifier")]
     public class TextFileClusterReporter
     {
         protected TextFileCluster FileCluster;
@@ -210,6 +213,115 @@ namespace Chaos.src.Ethena
 
             return sb1.ToString();
         }
+    }
+
+    /// <summary>
+    ///     <para>
+    ///      Class construct an instance with the following information: 
+    ///     </para>
+    ///    
+    ///     
+    /// </summary>
+    public class TextFileClassifier {
+
+        // TODO: Do these: 
+        // 1. Construct a KMinSpanningTree Instance. 
+        // 2. Run that instance
+        // 3. Analyze the output 
+        // 4. Produce report on it. 
+
+        protected KMinSpanningTree ClusterIdentifier;
+        // Store it for convenience of producing reports. 
+        protected string Directory; 
+
+        /// <summary>
+        ///     For internal use only. 
+        /// </summary>
+        protected TextFileClassifier(){}
+
+        /// <summary>
+        ///     
+        /// </summary>
+        /// <param name="fileAndContent"></param>
+        /// <param name="maxClusterSize"></param>
+        /// <returns></returns>
+        public static TextFileClassifier GetInstance(
+            IDictionary<string, string> fileAndContent, 
+            int maxClusterSize = -1)
+        {
+
+            Queue<Task<Point>> tasks = new Queue<Task<Point>>();
+
+            foreach (KeyValuePair<string, string> kvp in fileAndContent)
+            {
+                tasks.Enqueue(
+                        new Task<Point>(
+                                () =>
+                                {
+                                    return new Text(kvp.Value, kvp.Key);
+                                }
+                            )
+                    );
+            }
+
+            QueueBasedTaskRunner<Point> runner = new QueueBasedTaskRunner<Point>(tasks);
+            runner.RunParallel();
+            TextFileClassifier TheInstance = new TextFileClassifier();
+            TheInstance.ClusterIdentifier = new KMinSpanningTree(runner.GetResult().ToArray(), maxClusterSize);
+            return TheInstance; 
+        }
+
+        /// <summary>
+        ///     Get the instance prividing the directory containing the text files you want to classfiy 
+        /// </summary>
+        /// <param name="directory">
+        ///     A string that points to the directory of targeted files. 
+        /// </param>
+        /// <param name="maxClusterSize">
+        ///     The maximum size you of the clusters you want to set. 
+        /// </param>    
+        /// <returns>
+        ///     An instacne of TextFileClassifier.
+        /// </returns>
+        public static TextFileClassifier GetInstance(string directory, int maxClusterSize = -1)
+        {
+            DirectoryInfo dinfo = new DirectoryInfo(directory);
+            if (dinfo.Exists)
+            {
+                throw new ArgumentException();
+            }
+            
+            IDictionary<string, string> FilesAndContent = Basic.GetContentForAllFiles(directory, false, "txt");
+            TextFileClassifier TheInstance = GetInstance(FilesAndContent, maxClusterSize);
+            TheInstance.Directory = directory;
+            return TheInstance;
+        }
+
+
+        public string GetReport()
+        {
+            // Evaluate and Digest Results -----------------------------------------------------------------------------
+            ClusterIdentifier.KMinKruskal();
+            IEnumerable<PointCollection> Step1 = ClusterIdentifier.KSpanningTree.AsEnumerable();
+            IEnumerable<Point[]> Step2 = Step1.Select((e) => e.ToArray());
+            IEnumerable<Text[]> Step3 = Step2.Select((e) =>
+            {
+                return Array.ConvertAll(
+                    e, (ee) => ee as Text
+                );
+            });
+
+            // To Return -----------------------------------------------------------------------------------------------
+            string Report = "";
+
+            foreach (Text[] Cluster in Step3)
+            { 
+                
+            }
+
+            return null; 
+        }
+    
     }
 
     

@@ -67,10 +67,16 @@ namespace Chaos.src.Ethena
     }
 
     /// <summary>
-    ///     A class designed for ranking the clusters by their sizes. 
-    ///     * A collection of points will be put into a set, and order by their sizes. 
-    ///     * The top ranking 2 collection will be regarded as the potential centroids 
+    ///     A class designed for ranking the clusters by their sizes. It 
+    ///     prevents any 2 clusters that merges into a cluster which is higher than the threshold. 
+    ///     <para>
+    ///      * A collection of points will be put into a set, and order by their sizes. 
+    ///     </para>
+    ///     <para>
+    ///      * The top ranking 2 collection will be regarded as the potential centroids 
     ///     for 2 of the clusters we want to identify. 
+    ///     </para>
+    ///    
     /// </summary>
     public class PointCollection : IComparable
     {
@@ -162,6 +168,7 @@ namespace Chaos.src.Ethena
     /// <summary>
     /// 
     /// </summary>
+    [Obsolete("replaced by K-Min Spanning Tree Class")]
     public class FullGraph
     {
         protected SortedSet<Edge> E; // Edges soted by weight
@@ -340,6 +347,9 @@ namespace Chaos.src.Ethena
     ///     New and improved class that can handle clustering more than 2 clusters. 
     ///     * Cluster all the poitn as an instance of: PointCollection. 
     ///     TODO: Incorperates this
+    ///     <para>
+    ///     TODO: This clustering strategy doesn't help with clusters that have uneven sizes. 
+    ///     </para>
     /// </summary>
     public class KMinSpanningTree {
 
@@ -380,10 +390,23 @@ namespace Chaos.src.Ethena
 
         public IImmutableSet<PointCollection> KSpanningTree {
             get {
+                if (KComponents is null)
+                {
+                    KMinKruskal();
+                }
                 return Basic.ImmuteSet<PointCollection>(KComponents);
             }
         }
 
+        /// <summary>
+        ///     Constructor just construct, to cluster, call on the KMinKruskal Method. 
+        /// </summary>
+        /// <param name="points">
+        ///     A list of objects defined with the Point interface. 
+        /// </param>
+        /// <param name="ClusterMaxSize">
+        ///     A integer that limit the size of the maximum cluster. 
+        /// </param>
         public KMinSpanningTree(Point[] points, int ClusterMaxSize = -1)
         {
             Idx_V = new SortedDictionary<int, Point>();
@@ -419,9 +442,16 @@ namespace Chaos.src.Ethena
         }
 
         /// <summary>
+        /// <para>
         ///     A Recources holder for computing full graphs in parallel. 
-        ///     * Lock the sorted set. 
-        /// </summary>
+        /// </para>
+        /// <list type ="bullet|number|table">
+        ///    <item>
+        ///        <description> 
+        ///         Lock the set and add to it in a paralized manner. 
+        ///        </description>
+        ///    </item>
+        /// </list>
         protected class EdgesBuffers
         {
             SortedSet<Edge> Holder;
@@ -441,6 +471,7 @@ namespace Chaos.src.Ethena
         /// <summary>
         ///     Try and join K-Minimum Spanning Tree such that all connected components are 
         ///     having a size less than the given threshold. 
+        ///     TODO: Test this more carefully. 
         /// </summary>
         public virtual void KMinKruskal()
         {
@@ -466,7 +497,6 @@ namespace Chaos.src.Ethena
                 Partitions[I] = pc;
                 ClustersSet.Add(pc);
             }
-            
             
             foreach (Edge e in E)
             {
@@ -494,6 +524,7 @@ namespace Chaos.src.Ethena
     /// <summary>
     ///     * Should not accept fewer than 5 points, that is just too small to determine. 
     /// </summary>
+    [Obsolete("Tooo stupid to use")]
     public class FullGraphClustering : FullGraph
     {
         public Point Centroid1 { get; protected set;}
@@ -609,7 +640,5 @@ namespace Chaos.src.Ethena
 
             return ClustersSet; 
         }
-
-
     }
 }

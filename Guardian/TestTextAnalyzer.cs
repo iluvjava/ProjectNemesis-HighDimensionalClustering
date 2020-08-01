@@ -12,7 +12,6 @@ namespace Guardian
 {
 
    
-
     class TestTextAnalyzer
     { 
         // public const string Path = @"C:\Users\victo\source\repos\Math-381-Project-2\data";
@@ -38,7 +37,7 @@ namespace Guardian
 
 
         [Test]
-        public void TestTextClustring()
+        public void TestTextClustering()
         {
             WriteLine($"Files and Content Sizes:{FilesAndContent.Count} ");
 
