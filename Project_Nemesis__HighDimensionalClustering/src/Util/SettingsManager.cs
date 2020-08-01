@@ -33,14 +33,17 @@ namespace Chaos.src.Util
     public delegate double MatrixDisFxn(double[,] a, double[,] b);
 
 
+   
+
+
     /// <summary>
     ///     Singleton Design. 
     /// </summary>
-    public class SettingsManager
+    public static class SettingsManager
     {
         public static MatrixMetric MtxMetric = MatrixMetric.TwoNorm;
         public static MatrixType MtxType = MatrixType.Tm27;
-       
+        public static bool FileSearchRecursive = true;
 
         /// <summary>
         ///     Let the setting manager dispatch a delegate 

@@ -50,8 +50,44 @@ namespace Project_Nemesis__HighDimensionalClustering.src.Util
             t.Start();
             return cts;
         }
+
+
+        /// <summary>
+        ///     Fill the whole line of the console with a repeating character; 
+        ///     there will be a new line char at the returned string. 
+        /// </summary>
+        /// <param name="c">
+        ///     The character. 
+        /// </param>
+        /// <returns>
+        ///     A string that can be printed out directly. 
+        /// </returns>
+        public static string GetSeperator(char c = '=')
+        {
+            int Width = -1;
+            try
+            {
+                Width = Console.WindowWidth;
+            }
+            catch {
+                Width = 40;           
+            }
+
+            StringBuilder sb = new StringBuilder();
+            for (int I = 0; I < Width - 1; I++)
+            {
+                sb.Append(c);
+            }
+            sb.Append('\n');
+            return sb.ToString();
+        }
+
+
     }
 
+    /// <summary>
+    ///     
+    /// </summary>
     static class ConsoleInteract
     {
 
@@ -61,7 +97,7 @@ namespace Project_Nemesis__HighDimensionalClustering.src.Util
         ///     It will ask for the inputs repeatedly until the input matches the regex expression. 
         /// </summary>
         /// <returns>
-        ///     
+        ///     A string, formatted, and can be printed out and viewed as a report in the console. 
         /// </returns>
         public static string GetUserInput(string inputInstructions, string patterns)
         {
@@ -75,6 +111,7 @@ namespace Project_Nemesis__HighDimensionalClustering.src.Util
             return s;
         }
 
-        
+
+       
     }
 }

@@ -1,13 +1,10 @@
 ﻿using Chaos.src.Util;
-using MyDatastructure.Maps;
+using Project_Nemesis__HighDimensionalClustering.src.Util;
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using TaskRunners;
@@ -220,7 +217,7 @@ namespace Chaos.src.Ethena
     ///      Class construct an instance with the following information: 
     ///     </para>
     ///    
-    ///     
+    ///     TODO: Test this class. 
     /// </summary>
     public class TextFileClassifier {
 
@@ -286,40 +283,54 @@ namespace Chaos.src.Ethena
         public static TextFileClassifier GetInstance(string directory, int maxClusterSize = -1)
         {
             DirectoryInfo dinfo = new DirectoryInfo(directory);
-            if (dinfo.Exists)
+            if (!dinfo.Exists)
             {
-                throw new ArgumentException();
+                throw new ArgumentException("Directory doesn't exist.");
             }
             
-            IDictionary<string, string> FilesAndContent = Basic.GetContentForAllFiles(directory, false, "txt");
+            IDictionary<string, string> FilesAndContent = Basic.GetContentForAllFiles(
+                directory, 
+                SettingsManager.FileSearchRecursive, 
+                "txt");
             TextFileClassifier TheInstance = GetInstance(FilesAndContent, maxClusterSize);
             TheInstance.Directory = directory;
             return TheInstance;
         }
 
-
+        /// <summary>
+        ///     Produce a report for all the files in the specified directory. 
+        /// </summary>
+        /// <returns>
+        ///     A string that is ready to print. 
+        /// </returns>
         public string GetReport()
         {
+
             // Evaluate and Digest Results -----------------------------------------------------------------------------
             ClusterIdentifier.KMinKruskal();
             IEnumerable<PointCollection> Step1 = ClusterIdentifier.KSpanningTree.AsEnumerable();
-            IEnumerable<Point[]> Step2 = Step1.Select((e) => e.ToArray());
-            IEnumerable<Text[]> Step3 = Step2.Select((e) =>
+            IEnumerable<Point[]> Step2 = Step1.Select((pointArray) => pointArray.ToArray());
+            IEnumerable<Text[]> Step3 = Step2.Select((textArray) =>
             {
                 return Array.ConvertAll(
-                    e, (ee) => ee as Text
+                    textArray, (eachText) => eachText as Text
                 );
             });
 
             // To Return -----------------------------------------------------------------------------------------------
-            string Report = "";
-
+            StringBuilder Report = new StringBuilder();
+            Report.Append(ConsoleLog.GetSeperator());
+            Report.AppendLine("Identified Clusters");
+            Report.Append(ConsoleLog.GetSeperator());
             foreach (Text[] Cluster in Step3)
-            { 
-                
+            {
+                foreach (Text T in Cluster)
+                {
+                    Report.AppendLine(T.file_name);
+                }
+                Report.Append(ConsoleLog.GetSeperator('-'));
             }
-
-            return null; 
+            return Report.ToString(); 
         }
     
     }
