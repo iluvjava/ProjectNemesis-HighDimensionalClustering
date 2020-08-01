@@ -65,6 +65,7 @@ namespace Project_Nemesis__HighDimensionalClustering.src.Util
         public static string GetSeperator(char c = '=')
         {
             int Width = -1;
+            // This is stupid but it's fine. 
             try
             {
                 Width = Console.WindowWidth;
@@ -72,7 +73,6 @@ namespace Project_Nemesis__HighDimensionalClustering.src.Util
             catch {
                 Width = 40;           
             }
-
             StringBuilder sb = new StringBuilder();
             for (int I = 0; I < Width - 1; I++)
             {
@@ -81,7 +81,6 @@ namespace Project_Nemesis__HighDimensionalClustering.src.Util
             sb.Append('\n');
             return sb.ToString();
         }
-
 
     }
 

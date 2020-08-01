@@ -23,6 +23,93 @@ namespace Chaos.src.Util
 
 
         /// <summary>
+        ///     Take the average, entries wise, for a list of doubles. 
+        ///     * Zagged array is ok, it will do it entrywise, divided by the number of 
+        ///     inner arrays having that entry available. 
+        /// </summary>
+        /// <param name="arg">
+        ///     Nested array. 
+        /// </param>
+        /// <returns>
+        ///     The entrywiese average. 
+        /// </returns>
+        public static double[] EntrywiseAverage(double[][] arg)
+        {
+            if (arg.Length == 0) return null;
+            int MaxArrayLength = arg[0].Length;
+
+            for (int I = 0; I < arg.Length; I++)
+            {
+                MaxArrayLength = Math.Max(MaxArrayLength, arg[I].Length);
+            }
+
+            double[] EntrySum = new double[MaxArrayLength];
+            double[] EntryCount = new double[MaxArrayLength];
+            double[] Avg = new double[MaxArrayLength];
+            for (int I = 0; I < arg.Length; I++)
+                for (int J = 0; J < arg[I].Length; J++)
+                {
+                    EntrySum[J] += arg[I][J];
+                    EntryCount[J]++;
+                }
+            for (int I = 0; I < MaxArrayLength; I++)
+            {
+                Avg[I] = EntrySum[I] / EntryCount[I];
+            }
+
+            return Avg;
+        }
+
+        /// <summary>
+        ///     Takes the average of entries wise average for 2d array, 
+        ///     the size of the 2d uniform arrays can be arbitrarily sized, 
+        ///     and it will stake take the average because it only focuses the averages 
+        ///     of each entries
+        ///     
+        ///     The resulting 2D array will have width and height of the 2d array 
+        ///     that has the largest width and height in the give list of 2d array. 
+        /// </summary>
+        /// <param name="arg"></param>
+        /// <returns></returns>
+        public static double[,] EntrywiseAverage(double[][,] arg)
+        {
+            if (arg.Length == 0) throw new ArgumentException("Cannot accept empty argument. ");
+            int MaxH = arg[0].GetLength(0), MaxW = arg[0].GetLength(1);
+            {
+                for (int I = 0; I < arg.Length; I++)
+                {
+                    MaxH = Math.Max(arg[I].GetLength(0), MaxH);
+                    MaxW = Math.Max(arg[I].GetLength(1), MaxW);
+                }
+            }
+
+            int[,] FrequenciesTable = new int[MaxH, MaxW];
+            double[,] SumTable = new double[MaxH, MaxW];
+            {
+                for (int I = 0; I < arg.Length; I++)
+                {
+                    double[,] M = arg[I];
+                    for (int J = 0; J < M.GetLength(0); J++)
+                        for (int K = 0; K < M.GetLength(1); K++)
+                        {
+                            FrequenciesTable[J, K]++;
+                            SumTable[J, K] += M[J, K];
+                        }
+                }
+            }
+
+            double[,] AverageTable = new double[MaxH, MaxW];
+            {
+                for (int I = 0; I < MaxH; I++)
+                    for (int J = 0; J < MaxW; J++)
+                    {
+                        AverageTable[I, J] = SumTable[I, J] / FrequenciesTable[I, J];
+                    }
+            }
+            return AverageTable;
+        }
+
+        /// <summary>
         /// Prepare the string for the transition matrices. 
         ///     * Capital letters are not removed. 
         ///     * Apostrophe is ignored. 
@@ -51,6 +138,31 @@ namespace Chaos.src.Util
                 else; // empty. 
             }
             return charStream;
+        }
+
+        /// <summary>
+        ///     A 27 character transition matrix, second order. 
+        /// </summary>
+        /// <param name ="s">
+        ///     The raw text in English. 
+        /// </param>
+        /// <returns>
+        ///     A double, which is gotten from the converted string. 
+        /// </returns>
+        public static double[,] Get2ndTM27(string s) // UNDONE: Paralize?
+        {
+            int[,] res = new int[27 * 27, 27 * 27];
+            IList<char> charlist = FilterByAlphebeticalChars(s);
+            for (int I = 2; I < charlist.Count - 1; I++)
+            {
+                int c1 = charlist[I - 2] == ' ' ? 26 : charlist[I - 2] - 'a';
+                int c2 = charlist[I - 1] == ' ' ? 26 : charlist[I - 1] - 'a';
+                int c3 = charlist[I] == ' ' ? 26 : charlist[I] - 'a';
+                int c4 = charlist[I + 1] == ' ' ? 26 : charlist[I + 1] - 'a';
+                res[c1 * c2, c3 * c4] += 1;
+            }
+            double[,] normalizedFreqMatrix = NormalizeAllRow(res);
+            return normalizedFreqMatrix;
         }
 
         /// <summary>
@@ -130,32 +242,6 @@ namespace Chaos.src.Util
             double[,] normalizedFreqMatrix = NormalizeAllRow(res);
             return normalizedFreqMatrix;
         } //UNDONE: Paralize?
-
-        /// <summary>
-        ///     A 27 character transition matrix, second order. 
-        /// </summary>
-        /// <param name ="s">
-        ///     The raw text in English. 
-        /// </param>
-        /// <returns>
-        ///     A double, which is gotten from the converted string. 
-        /// </returns>
-        public static double[,] Get2ndTM27(string s) // UNDONE: Paralize?
-        {
-            int[,] res = new int[27*27, 27*27];
-            IList<char> charlist = FilterByAlphebeticalChars(s);
-            for (int I = 2; I < charlist.Count - 1; I++)
-            {
-                int c1 = charlist[I - 2] == ' ' ? 26 : charlist[I - 2] - 'a';
-                int c2 = charlist[I - 1] == ' ' ? 26 : charlist[I - 1] - 'a';
-                int c3 = charlist[I] == ' ' ? 26 : charlist[I] - 'a';
-                int c4 = charlist[I + 1] == ' ' ? 26 : charlist[I + 1] - 'a';
-                res[c1 * c2, c3 * c4] += 1;
-            }
-            double[,] normalizedFreqMatrix = NormalizeAllRow(res);
-            return normalizedFreqMatrix;
-        }
-
         /// <summary>
         /// Good helper function. 
         /// </summary>
@@ -226,95 +312,38 @@ namespace Chaos.src.Util
         }
 
         /// <summary>
-        ///     Take the average, entries wise, for a list of doubles. 
-        ///     * Zagged array is ok, it will do it entrywise, divided by the number of 
-        ///     inner arrays having that entry available. 
+        ///     Matrix is assumed to be possitive. 
         /// </summary>
-        /// <param name="arg">
-        ///     Nested array. 
-        /// </param>
-        /// <returns>
-        ///     The entrywiese average. 
-        /// </returns>
-        public static double[] EntrywiseAverage(double[][] arg)
-        {
-            if (arg.Length == 0) return null; 
-            int MaxArrayLength = arg[0].Length;
-
-            for (int I = 0; I < arg.Length; I++)
-            {
-                MaxArrayLength = Math.Max(MaxArrayLength, arg[I].Length); 
-            }
-
-            double[] EntrySum = new double[MaxArrayLength];
-            double[] EntryCount = new double[MaxArrayLength];
-            double[] Avg = new double[MaxArrayLength]; 
-            for (int I = 0; I < arg.Length; I++)
-                for (int J = 0; J < arg[I].Length; J++)
-                {
-                    EntrySum[J] += arg[I][J];
-                    EntryCount[J]++; 
-                }
-            for (int I = 0; I < MaxArrayLength; I++)
-            {
-                Avg[I] = EntrySum[I] / EntryCount[I]; 
-            }
-
-            return Avg; 
-        }
-
-        /// <summary>
-        ///     Takes the average of entries wise average for 2d array, 
-        ///     the size of the 2d uniform arrays can be arbitrarily sized, 
-        ///     and it will stake take the average because it only focuses the averages 
-        ///     of each entries
-        ///     
-        ///     The resulting 2D array will have width and height of the 2d array 
-        ///     that has the largest width and height in the give list of 2d array. 
-        /// </summary>
-        /// <param name="arg"></param>
+        /// <param name="a"></param>
+        /// <param name="b"></param>
         /// <returns></returns>
-        public static double[,] EntrywiseAverage(double[][,] arg)
+        public static double MatrixConsineDistance(double[,] a, double[,] b)
         {
-            if (arg.Length == 0) throw new ArgumentException("Cannot accept empty argument. ");
-            int MaxH = arg[0].GetLength(0), MaxW = arg[0].GetLength(1);
-            {
-                for (int I = 0; I < arg.Length; I++)
-                {
-                    MaxH = Math.Max(arg[I].GetLength(0), MaxH);
-                    MaxW = Math.Max(arg[I].GetLength(1), MaxW); 
-                }
-            }
-
-            int[,] FrequenciesTable = new int[MaxH, MaxW];
-            double[,] SumTable = new double[MaxH, MaxW];
-            {
-                for (int I = 0; I < arg.Length; I++)
-                {
-                    double[,] M = arg[I];
-                    for (int J = 0; J < M.GetLength(0); J++)
-                        for (int K = 0; K < M.GetLength(1); K++)
-                        {
-                            FrequenciesTable[J, K]++;
-                            SumTable[J, K] += M[J, K]; 
-                        }
-                }
-            }
-
-            double[,] AverageTable = new double[MaxH, MaxW];
-            {
-                for (int I = 0; I < MaxH; I++)
-                    for (int J = 0; J < MaxW; J++)
-                    {
-                        AverageTable[I, J] = SumTable[I, J] / FrequenciesTable[I, J]; 
-                    }
-            }
-            return AverageTable;
+            throw new NotImplementedException(); // TODO: Implement this. 
         }
-
         public static void Println(object o)
         {
             Console.WriteLine(o);
+        }
+
+        /// <summary>
+        ///     Filter out files containing a certain postfix. 
+        /// </summary>
+        /// <param name="postfix"></param>
+        /// <returns>
+        /// An array of files filtered by post fix. 
+        /// </returns>
+        static FileInfo[] FilterFilesByPostFix(FileInfo[] files, string postfix)
+        {
+            var filtered = new List<FileInfo>();
+            foreach (FileInfo f in files)
+            {
+                if (f.Name.Substring(f.Name.Length - 3).Equals(postfix))
+                {
+                    filtered.Add(f);
+                }
+            }
+            return filtered.ToArray();
         }
 
         static FileInfo[] ListFilesRecur(string dir)
@@ -359,27 +388,6 @@ namespace Chaos.src.Util
             }
             return res;
         }
-
-        /// <summary>
-        ///     Filter out files containing a certain postfix. 
-        /// </summary>
-        /// <param name="postfix"></param>
-        /// <returns>
-        /// An array of files filtered by post fix. 
-        /// </returns>
-        static FileInfo[] FilterFilesByPostFix(FileInfo[] files, string postfix)
-        {
-            var filtered = new List<FileInfo>(); 
-            foreach(FileInfo f in files)
-            {
-                if(f.Name.Substring(f.Name.Length - 3).Equals(postfix))
-                {
-                    filtered.Add(f);
-                }
-            }
-            return filtered.ToArray();
-        }
-
     }
 
     

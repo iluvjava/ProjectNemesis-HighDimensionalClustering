@@ -1,6 +1,7 @@
 ﻿using MathNet.Numerics.LinearAlgebra.Complex;
 using System;
 using System.Collections.Generic;
+using System.Runtime;
 using System.Text;
 using static Chaos.src.Util.Basic;
 
@@ -31,10 +32,6 @@ namespace Chaos.src.Util
     /// </param>
     /// <returns></returns>
     public delegate double MatrixDisFxn(double[,] a, double[,] b);
-
-
-   
-
 
     /// <summary>
     ///     Singleton Design. 
@@ -119,6 +116,10 @@ namespace Chaos.src.Util
                     };
                     return VectorizedNorm; 
                 }
+                case MatrixMetric.Consine:
+                {
+                    throw new NotImplementedException(); // TODO: Implement this. 
+                }
             }
 
             throw new Exception("This shouldn't happen, please go check source codes.");
@@ -132,6 +133,7 @@ namespace Chaos.src.Util
     {
         TwoNorm,
         VecOneNorm,
+        Consine,
     }
 
     public enum MatrixType
