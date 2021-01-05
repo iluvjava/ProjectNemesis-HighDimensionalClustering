@@ -1,14 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
-
+using MathNet.Numerics.LinearAlgebra;
 using System.Text;
 using System.IO;
 using System.Collections.Immutable;
 using MathNet.Numerics.Optimization;
 using System.Globalization;
 using System.Threading.Tasks;
+using System.Linq;
+using MathNet.Numerics.Integration;
+using MathNet.Numerics;
+using System.Runtime.InteropServices;
 
-namespace Chaos.src.Util
+namespace TheBase.src.Util
 {
     /// <summary>
     ///     Stores all the fragments of functions that are going to be needed 
@@ -20,7 +24,6 @@ namespace Chaos.src.Util
     {
 
         public static bool Verbalize = false; // whether to print a lot of stuff to the console. 
-
 
         /// <summary>
         ///     Take the average, entries wise, for a list of doubles. 
@@ -280,20 +283,18 @@ namespace Chaos.src.Util
             return ImmutableHashSet.ToImmutableHashSet<T1>(arg);
         }
 
+        /// <summary>
+        ///     Vectorize the matrix and then take the Euclidean distance. 
+        /// </summary>
+        /// <param name="a"></param>
+        /// <param name="b"></param>
+        /// <returns>
+        ///     a positive float. 
+        /// </returns>
         public static double Matrix2NormDistance(double[,] a, double[,] b)
         {
-            // dimension check: 
-            if (a.GetLength(0) != b.GetLength(0) || a.GetLength(1) != b.GetLength(1))
-                throw new Exception("Matrix Dimension Mismatched. ");
-            double sum = 0;
-
-            for (int I = 0; I < a.GetLength(0); I++)
-                for (int J = 0; J < a.GetLength(1); J++)
-                {
-                    sum += Math.Pow(a[I, J] - b[I, J], 2.0);
-                }
-
-            return Math.Sqrt(sum);
+            double[] FlattenA = a.Cast<double>().ToArray(), FlattenB = b.Cast<double>().ToArray();
+            return Distance.Euclidean(FlattenA, FlattenB);
         }
 
         public static double MatrixVectorizedOneNorm(double[,] a, double[,] b)
@@ -316,10 +317,15 @@ namespace Chaos.src.Util
         /// </summary>
         /// <param name="a"></param>
         /// <param name="b"></param>
-        /// <returns></returns>
+        /// <returns>
+        /// 
+        /// </returns>
         public static double MatrixConsineDistance(double[,] a, double[,] b)
         {
-            throw new NotImplementedException(); // TODO: Implement this. 
+            double[] FlattenedA = a.Cast<double>().ToArray(), FlattenedB = b.Cast<double>().ToArray();
+
+            double dis = Distance.Cosine(FlattenedA, FlattenedB);
+            return dis;
         }
         public static void Println(object o)
         {
@@ -370,6 +376,7 @@ namespace Chaos.src.Util
                 ListFilesRecur(di, bucket); 
             }
         }
+        
         static double[,] NormalizeAllRow(int[,] a)
         {
             double[,] res = new double[a.GetLongLength(0), a.GetLength(1)]; 

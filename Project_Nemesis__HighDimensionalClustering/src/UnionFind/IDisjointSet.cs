@@ -43,7 +43,6 @@ namespace MyDatastructure.UnionFind
         /// <param name="a"></param>
         /// <param name="b"></param>
         /// <returns></returns>
-
         bool IsSameSet(T a, T b);
 
 

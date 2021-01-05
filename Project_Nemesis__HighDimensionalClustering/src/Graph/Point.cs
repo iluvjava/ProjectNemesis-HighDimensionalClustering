@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Text;
 using MathNet.Numerics.Random;
 using MathNet.Numerics.Distributions;
-using Chaos.src.Util;
+using TheBase.src.Util;
 
-namespace Chaos.src.Ethena
+namespace TheBase.src.Core
 {
 
     /// <summary>
@@ -38,10 +38,10 @@ namespace Chaos.src.Ethena
                 return Text.Dis(aa, bb); 
             }
 
-            if (a is SpacialPoint && b is SpacialPoint)
+            if (a is SpatialPoint && b is SpatialPoint)
             {
-                SpacialPoint aa = a as SpacialPoint, bb = b as SpacialPoint;
-                return SpacialPoint.Dis(aa, bb); 
+                SpatialPoint aa = a as SpatialPoint, bb = b as SpatialPoint;
+                return SpatialPoint.Dis(aa, bb); 
             }
 
             throw new NotImplementedException();
@@ -64,11 +64,11 @@ namespace Chaos.src.Ethena
         {
             if (points.Length == 0) throw new Exception("Can't find the centroid of an empty points[]."); 
 
-            if (points[0] is SpacialPoint)
+            if (points[0] is SpatialPoint)
             {
-                SpacialPoint[] p = new SpacialPoint[points.Length];
-                for (int I = 0; I < p.Length; I++) p[I] = (SpacialPoint)points[I]; 
-                return SpacialPoint.TakeAverage(p);
+                SpatialPoint[] p = new SpatialPoint[points.Length];
+                for (int I = 0; I < p.Length; I++) p[I] = (SpatialPoint)points[I]; 
+                return SpatialPoint.TakeAverage(p);
             }
 
             if (points[0] is Text)
@@ -86,26 +86,26 @@ namespace Chaos.src.Ethena
     /// This class is really for test full graph, that is all. 
     /// But it's important cause debugging on matrix dimension is almost impossible. 
     /// </summary>
-    public class SpacialPoint : Point
+    public class SpatialPoint : Point
     {
         protected double[] coord ;
         protected int dim;
 
-        protected SpacialPoint(int dimension)
+        protected SpatialPoint(int dimension)
         {
             // internal constructor, origin is created. 
             coord = new double[dimension];
             dim = dimension;
         }
 
-        public SpacialPoint(double[] coords)
+        public SpatialPoint(double[] coords)
         {
             if (coords.Length == 0) throw new ArgumentException();
             dim = coords.Length;
             coord = coords;
         }
 
-        public SpacialPoint(int[] coords)
+        public SpatialPoint(int[] coords)
         { 
             if (coords.Length == 0) throw new ArgumentException();
             coord = new double[coords.Length]; 
@@ -120,7 +120,7 @@ namespace Chaos.src.Ethena
         /// <param name="a"></param>
         /// <param name="b"></param>
         /// <returns></returns>
-        public static double Dis(SpacialPoint a, SpacialPoint b)
+        public static double Dis(SpatialPoint a, SpatialPoint b)
         {
             if (a is null || b is null)
                 throw new ArgumentException("Can't take null. ");
@@ -146,7 +146,7 @@ namespace Chaos.src.Ethena
 
         public static Point[] NormalRandomPoints(double[] mu, double sd, int N)
         {
-            SpacialPoint[] res = new SpacialPoint[N];
+            SpatialPoint[] res = new SpatialPoint[N];
             int dimension = mu.Length;
             Normal[] Generators = new Normal[dimension];
             
@@ -154,7 +154,7 @@ namespace Chaos.src.Ethena
             
             for (int I = 0; I < N; I++)
             {
-                res[I] = new SpacialPoint(dimension); 
+                res[I] = new SpatialPoint(dimension); 
             }
             for (int I = 0; I < dimension; I++)
             {
@@ -174,7 +174,7 @@ namespace Chaos.src.Ethena
         ///     Take the average of all spacial points from a list of points. 
         /// </summary>
         /// <returns></returns>
-        public static Point TakeAverage(SpacialPoint[] points)
+        public static Point TakeAverage(SpatialPoint[] points)
         {
             double[][] thecoords = new double[points.Length][];
             for (int I = 0; I < points.Length; I++)
@@ -182,7 +182,7 @@ namespace Chaos.src.Ethena
                 thecoords[I] = points[I].coord; 
             }
 
-            return new SpacialPoint(Basic.EntrywiseAverage(thecoords));
+            return new SpatialPoint(Basic.EntrywiseAverage(thecoords));
         }
 
         /// <summary>

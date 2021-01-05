@@ -1,9 +1,9 @@
 ﻿using NUnit.Framework;
 using System.Collections.Generic;
 using System.Text;
-using Chaos.src.Util;
+using TheBase.src.Util;
 
-using Chaos.src.Ethena;
+using TheBase.src.Core;
 
 using static System.Console;
 using System;
@@ -91,10 +91,10 @@ namespace Guardian
                     {
                         Stopwatch sw = new Stopwatch();
 
-                        SpacialPoint ExpectedCenter1 = new SpacialPoint(Mu1), ExpectedCenter2 = new SpacialPoint(Mu2);
+                        SpatialPoint ExpectedCenter1 = new SpatialPoint(Mu1), ExpectedCenter2 = new SpatialPoint(Mu2);
 
-                        Point[] samples1 = SpacialPoint.NormalRandomPoints(Mu1, 1, SizeofEachCluster);
-                        Point[] samples2 = SpacialPoint.NormalRandomPoints(Mu2, 1, SizeofEachCluster);
+                        Point[] samples1 = SpatialPoint.NormalRandomPoints(Mu1, 1, SizeofEachCluster);
+                        Point[] samples2 = SpatialPoint.NormalRandomPoints(Mu2, 1, SizeofEachCluster);
 
                         Point[] merged = new Point[samples1.Length + samples2.Length];
                         Array.Copy(samples1, 0, merged, 0, samples1.Length);

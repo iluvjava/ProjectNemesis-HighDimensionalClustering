@@ -1,4 +1,4 @@
-﻿using Chaos.src.Util;
+﻿using TheBase.src.Util;
 using Project_Nemesis__HighDimensionalClustering.src.Util;
 using System;
 using System.Collections.Generic;
@@ -8,10 +8,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TaskRunners;
-using static Chaos.src.Util.SettingsManager;
+using static TheBase.src.Util.SettingsManager;
  
 
-namespace Chaos.src.Ethena
+namespace TheBase.src.Core
 {
     /// <summary>
     /// Text and the transition matrices generated from the text. 
@@ -161,7 +161,6 @@ namespace Chaos.src.Ethena
         }
     }
 
-
     /// <summary>
     ///     This class is for reporting the results found by the 
     ///     TextFileCluster in a more acceptable manner. 
@@ -216,16 +215,9 @@ namespace Chaos.src.Ethena
     ///     <para>
     ///      Class construct an instance with the following information: 
     ///     </para>
-    ///    
     ///     TODO: Test this class. 
     /// </summary>
     public class TextFileClassifier {
-
-        // TODO: Do these: 
-        // 1. Construct a KMinSpanningTree Instance. 
-        // 2. Run that instance
-        // 3. Analyze the output 
-        // 4. Produce report on it. 
 
         protected KMinSpanningTree ClusterIdentifier;
         // Store it for convenience of producing reports. 
@@ -243,8 +235,8 @@ namespace Chaos.src.Ethena
         /// <param name="maxClusterSize"></param>
         /// <returns></returns>
         public static TextFileClassifier GetInstance(
-            IDictionary<string, string> fileAndContent, 
-            int maxClusterSize = -1)
+                                IDictionary<string, string> fileAndContent, 
+                                int maxClusterSize = -1)
         {
 
             Queue<Task<Point>> tasks = new Queue<Task<Point>>();

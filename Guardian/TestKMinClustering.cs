@@ -1,4 +1,4 @@
-﻿using Chaos.src.Ethena;
+﻿using TheBase.src.Core;
 using NUnit.Framework;
 using System;
 using System.Collections.Immutable;
@@ -26,11 +26,11 @@ namespace Guardian
 
             Point[] Points = new Point[]
             {
-                new SpacialPoint(new int[]{1, 0}),
-                new SpacialPoint(new int[]{2, 0}),
-                new SpacialPoint(new int[]{3, 0}),
-                new SpacialPoint(new int[]{3, 10}),
-                new SpacialPoint(new int[]{4, 0})
+                new SpatialPoint(new int[]{1, 0}),
+                new SpatialPoint(new int[]{2, 0}),
+                new SpatialPoint(new int[]{3, 0}),
+                new SpatialPoint(new int[]{3, 10}),
+                new SpatialPoint(new int[]{4, 0})
             };
 
             KMinSpanningTree Kmst = new KMinSpanningTree(Points);
@@ -68,8 +68,8 @@ namespace Guardian
 
             while (--Counter != 0)
             {
-                Point[] samples1 = SpacialPoint.NormalRandomPoints(mu1, sd, EachClusterSize);
-                Point[] samples2 = SpacialPoint.NormalRandomPoints(mu2, sd, EachClusterSize);
+                Point[] samples1 = SpatialPoint.NormalRandomPoints(mu1, sd, EachClusterSize);
+                Point[] samples2 = SpatialPoint.NormalRandomPoints(mu2, sd, EachClusterSize);
 
                 Point[] merged = new Point[samples1.Length + samples2.Length];
                 Array.Copy(samples1, 0, merged, 0, samples1.Length);
@@ -112,7 +112,7 @@ namespace Guardian
         static Point2D[] Convert(Point[] points)
         {
             IEnumerable<Point> P = points.AsEnumerable();
-            IEnumerable<SpacialPoint> Sp = P.Select(e => e as SpacialPoint);
+            IEnumerable<SpatialPoint> Sp = P.Select(e => e as SpatialPoint);
             Point2D[] Points = Sp.Select(e => new Point2D(e[0], e[1])).ToArray();
             return Points;
         }

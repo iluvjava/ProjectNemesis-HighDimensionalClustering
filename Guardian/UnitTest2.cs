@@ -1,9 +1,9 @@
 ﻿using NUnit.Framework;
 using System.Collections.Generic;
 using System.Text;
-using Chaos.src.Util;
+using TheBase.src.Util;
 
-using Chaos.src.Ethena;
+using TheBase.src.Core;
 
 using static System.Console;
 using System;
@@ -26,8 +26,8 @@ namespace Guardian
         public void TestPointsClass()
         {
             
-            Point p1 = new SpacialPoint(new int[] { 0, 0, 0});
-            Point p2 = new SpacialPoint(new int[] { 1, 1 ,1});
+            Point p1 = new SpatialPoint(new int[] { 0, 0, 0});
+            Point p2 = new SpatialPoint(new int[] { 1, 1 ,1});
             Assert.IsTrue(Point.Dis(p1, p2)== Math.Sqrt(3));
             
         }
@@ -40,11 +40,11 @@ namespace Guardian
         {
             Point[] points = new Point[]
             {
-                new SpacialPoint(new int[]{ 1, 0}),
-                new SpacialPoint(new int[]{ 2, 0}),
-                new SpacialPoint(new int[]{ 3, 0}),
-                new SpacialPoint(new int[]{ 3, 10}),
-                new SpacialPoint(new int[]{ 4, 0})
+                new SpatialPoint(new int[]{ 1, 0}),
+                new SpatialPoint(new int[]{ 2, 0}),
+                new SpatialPoint(new int[]{ 3, 0}),
+                new SpatialPoint(new int[]{ 3, 10}),
+                new SpatialPoint(new int[]{ 4, 0})
             };
 
             FullGraph fg = new FullGraph(points);
@@ -76,8 +76,8 @@ namespace Guardian
             double[] mu1 = new double[] { 0, 0, 0 }, mu2 = new double[] {200, 200, 200};
             double sd = 100;
             int EachClusterSize = 500;
-            SpacialPoint ExpectedCenter1 = new SpacialPoint(mu1);
-            SpacialPoint ExpectedCenter2 = new SpacialPoint(mu2); 
+            SpatialPoint ExpectedCenter1 = new SpatialPoint(mu1);
+            SpatialPoint ExpectedCenter2 = new SpatialPoint(mu2); 
             WriteLine($"2 hypothetical centers: [[{mu1[0]}, {mu1[1]}, {mu1[2]}], [{mu2[0]},{mu2[1]},{mu2[2]}]],");
             int Counter = 100; 
             WriteLine("Average Normalized Deviations from centroid to centers");
@@ -85,8 +85,8 @@ namespace Guardian
             double DeviationAverage = 0; 
             while(--Counter!=0)
             {
-                Point[] samples1 = SpacialPoint.NormalRandomPoints(mu1, sd, EachClusterSize);
-                Point[] samples2 = SpacialPoint.NormalRandomPoints(mu2, sd, EachClusterSize);
+                Point[] samples1 = SpatialPoint.NormalRandomPoints(mu1, sd, EachClusterSize);
+                Point[] samples2 = SpatialPoint.NormalRandomPoints(mu2, sd, EachClusterSize);
 
                 Point[] merged = new Point[samples1.Length + samples2.Length];
                 Array.Copy(samples1, 0, merged, 0, samples1.Length);

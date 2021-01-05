@@ -1,18 +1,17 @@
-﻿using MyDatastructure.UnionFind;
+﻿using TheBase.src.Util;
+using MyDatastructure.UnionFind;
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.Diagnostics.CodeAnalysis;
 using System.Text;
-using Chaos.src.Util;
 using System.Threading.Tasks;
 
-namespace Chaos.src.Ethena
+namespace TheBase.src.Core
 {
-    public class Edge: IComparable
+    public class Edge : IComparable
     {
         double cost;
-        double ID; 
+        double ID;
         public Edge(Point a, Point b)
         {
             this.a = a;
@@ -37,12 +36,12 @@ namespace Chaos.src.Ethena
         /// <returns></returns>
         public static bool DeepEquals(Edge x, Edge y)
         {
-            return x.a.Equals(y.a) && x.b.Equals(y.b); 
+            return x.a.Equals(y.a) && x.b.Equals(y.b);
         }
 
         public static double CompareID(Edge x, Edge y)
         {
-            return x.ID - y.ID; 
+            return x.ID - y.ID;
         }
 
         public int CompareTo(object obj)
@@ -50,7 +49,7 @@ namespace Chaos.src.Ethena
             if (object.ReferenceEquals(obj, null)) throw new ArgumentException();
             if (obj.GetType() != typeof(Edge)) throw new ArgumentException(); // Strict Type equal. 
             if (object.ReferenceEquals(obj, this)) return 0;
-            if (DeepEquals(this, (Edge)obj)) return 0; 
+            if (DeepEquals(this, (Edge)obj)) return 0;
             int dw = CompareWeight(this, (Edge)obj);
             if (dw != 0) return dw;
             return Math.Sign(CompareID(this, (Edge)obj));
@@ -93,29 +92,29 @@ namespace Chaos.src.Ethena
         ///     Default constructor for static methods of the class. 
         /// </summary>
         protected PointCollection()
-        { 
-            
+        {
+
         }
 
         public int CompareTo(object obj)
         {
             if (object.ReferenceEquals(obj, null) || obj.GetType() != typeof(PointCollection))
             {
-                throw new ArgumentException(); 
+                throw new ArgumentException();
             }
-            
+
             PointCollection that = (PointCollection)obj;
             if (object.ReferenceEquals(this, that)) return 0;
             if (DeepEqual(this, that)) return 0;
             int SizeDiff = this.PointSet.Count - that.PointSet.Count;
             if (SizeDiff != 0) return Math.Sign(SizeDiff);
-            return Math.Sign(this.GetHashCode() - that.GetHashCode()); 
+            return Math.Sign(this.GetHashCode() - that.GetHashCode());
             // Having the same size doesn't mean they are equal.  
         }
 
         public static bool DeepEqual(PointCollection p1, PointCollection p2)
         {
-            return p1.PointSet.Equals(p2.PointSet); 
+            return p1.PointSet.Equals(p2.PointSet);
         }
 
         /// <summary>
@@ -130,22 +129,22 @@ namespace Chaos.src.Ethena
         /// <returns>
         ///     The union of 2 of the point collection. 
         /// </returns>
-        public static PointCollection operator + (PointCollection pc1, PointCollection pc2)
+        public static PointCollection operator +(PointCollection pc1, PointCollection pc2)
         {
             PointCollection Merged = new PointCollection();
             HashSet<Point> MergedSet = new HashSet<Point>();
 
             MergedSet.UnionWith(pc1.PointSet);
             MergedSet.UnionWith(pc2.PointSet);
-            Merged.PointSet = MergedSet; 
-            return Merged; 
+            Merged.PointSet = MergedSet;
+            return Merged;
         }
 
         public Point[] ToArray()
         {
             Point[] res = new Point[PointSet.Count];
             PointSet.CopyTo(res);
-            return res; 
+            return res;
         }
 
         override
@@ -161,7 +160,7 @@ namespace Chaos.src.Ethena
 
             sb.Remove(sb.Length - 2, 2);
             sb.Append("}");
-            return sb.ToString(); 
+            return sb.ToString();
         }
     }
 
@@ -195,12 +194,13 @@ namespace Chaos.src.Ethena
             // Parallel 
             {
                 EdgesBuffers Buffer = new EdgesBuffers(E);
-                Parallel.For(0, points.Length, I => {
-                     for(int J = I + 1; J < points.Length; J++)
-                     {
-                         Buffer.LockAdd(new Edge(points[I], points[J])); 
-                     }
-                 });
+                Parallel.For(0, points.Length, I =>
+                {
+                    for (int J = I + 1; J < points.Length; J++)
+                    {
+                        Buffer.LockAdd(new Edge(points[I], points[J]));
+                    }
+                });
             }
 
             max_partition = EstablishMST();
@@ -214,15 +214,15 @@ namespace Chaos.src.Ethena
             SortedSet<Edge> Holder;
             public EdgesBuffers(SortedSet<Edge> arg)
             {
-                Holder = arg; 
+                Holder = arg;
             }
 
             public void LockAdd(Edge e)
             {
-                lock(Holder)
-                Holder.Add(e);
+                lock (Holder)
+                    Holder.Add(e);
             }
-        
+
         }
 
         public virtual IImmutableSet<Edge> ChosedForMST
@@ -235,10 +235,11 @@ namespace Chaos.src.Ethena
 
         public virtual ImmutableDictionary<int, Point> IndexToVertices
         {
-            get {
-                
+            get
+            {
+
                 return Basic.ImmuteDic<int, Point>(V);
-            }        
+            }
         }
         public virtual IImmutableList<int> MaxPartitionSize
         {
@@ -252,10 +253,10 @@ namespace Chaos.src.Ethena
         {
             get
             {
-                return Basic.ImmuteDic<Point,  int>(W);
+                return Basic.ImmuteDic<Point, int>(W);
             }
         }
-        override 
+        override
             public string ToString()
         {
             StringBuilder sb = new StringBuilder();
@@ -274,13 +275,13 @@ namespace Chaos.src.Ethena
         {
             // A list of maximum size for each iteration. 
             IList<int> MaxSize = new List<int>();
-            
+
             // Disjoint set for kruskal.
             IDisjointSet<Point> ds = new ArrayDisjointSet<Point>();
-            
+
             // Keep track of max partition.
             SortedSet<int> CompSizes = new SortedSet<int>();
-            
+
             // mapping integer representative to the partition size. 
             IDictionary<int, int> PartitionSizes = new SortedDictionary<int, int>();
 
@@ -292,7 +293,7 @@ namespace Chaos.src.Ethena
 
             SortedSet<Edge> ChosenEdges = new SortedSet<Edge>();
             MaxSize.Add(1);
-            int TotalComponentCount = V.Count - 1; 
+            int TotalComponentCount = V.Count - 1;
             foreach (Edge e in E)
             {
                 Point u = e.a, v = e.b;
@@ -307,11 +308,11 @@ namespace Chaos.src.Ethena
                 }
 
                 MaxSize.Add(CompSizes.Max);
-                if (TotalComponentCount == 0) break; 
+                if (TotalComponentCount == 0) break;
             }
 
             // Establish Field. 
-            ChosenE = ChosenEdges; 
+            ChosenE = ChosenEdges;
             return MaxSize;
         }
 
@@ -328,18 +329,18 @@ namespace Chaos.src.Ethena
         /// </returns>
         protected virtual int IdentifyMaxBreakingEdge()
         {
-            int MaxChange = 0, MaxChangeIndex = 0; 
+            int MaxChange = 0, MaxChangeIndex = 0;
             for (int I = 1; I < max_partition.Count; I++)
             {
                 // HACK: This part, a >= > can make huge difference. 
                 int delta = max_partition[I] - max_partition[I - 1];
-                if ( delta > MaxChange)
+                if (delta > MaxChange)
                 {
                     MaxChange = delta;
                     MaxChangeIndex = I;
                 }
             }
-            return MaxChangeIndex; 
+            return MaxChangeIndex;
         }
 
     }
@@ -348,27 +349,32 @@ namespace Chaos.src.Ethena
     ///     * Cluster all the poitn as an instance of: PointCollection. 
     ///     TODO: Incorperates this
     ///     <para>
-    ///     TODO: This clustering strategy doesn't help with clusters that have uneven sizes. 
+    ///         Because it's a greedy algorithm, it really depends on the data. 
     ///     </para>
     /// </summary>
-    public class KMinSpanningTree {
+    public class KMinSpanningTree
+    {
 
-        protected SortedSet<Edge> E; // Edges soted by weight
+        protected SortedSet<Edge> E;        // Edges soted by weight
         protected SortedSet<Edge> ChosenE;  // Edges Chosen by Kruskal sorted by weight. 
+        
         // The index 0 is always one, because before we run kruskal, all partitions are 1 vertex with size 1. 
         protected IDictionary<int, Point> Idx_V;
         protected IDictionary<Point, int> V_Idx;
-        protected int Threshold;// The maximum size of the clusters.  
+        protected int Threshold;            // The maximum size of the clusters.  
         protected SortedSet<PointCollection> KComponents;
 
         /// <summary>
         ///     Set and get the maximum size of the cluters for the full graph. 
         /// </summary>
-        public int ClusterSizeThreshold {
-            get {
+        public int ClusterSizeThreshold
+        {
+            get
+            {
                 return Threshold;
             }
-            set {
+            set
+            {
                 int Upper = (int)(Idx_V.Count / 2.0), Lower = 2;
                 if (value <= Upper && value >= Lower)
                 {
@@ -382,14 +388,18 @@ namespace Chaos.src.Ethena
             }
         }
 
-        public IImmutableSet<Edge> ChosenEdges {
-            get {
+        public IImmutableSet<Edge> ChosenEdges
+        {
+            get
+            {
                 return Basic.ImmuteSet<Edge>(ChosenE);
             }
         }
 
-        public IImmutableSet<PointCollection> KSpanningTree {
-            get {
+        public IImmutableSet<PointCollection> KSpanningTree
+        {
+            get
+            {
                 if (KComponents is null)
                 {
                     KMinKruskal();
@@ -423,7 +433,8 @@ namespace Chaos.src.Ethena
             // Parallel 
             {
                 EdgesBuffers Buffer = new EdgesBuffers(E);
-                Parallel.For(0, points.Length, I => {
+                Parallel.For(0, points.Length, I =>
+                {
                     for (int J = I + 1; J < points.Length; J++)
                     {
                         Buffer.LockAdd(new Edge(points[I], points[J]));
@@ -433,10 +444,10 @@ namespace Chaos.src.Ethena
 
             if (ClusterMaxSize != -1)
             {
-                this.ClusterSizeThreshold = ClusterMaxSize;   
+                this.ClusterSizeThreshold = ClusterMaxSize;
             }
             else
-            { 
+            {
                 Threshold = (int)(Idx_V.Count / 2.0); // Default is 2 partition. 
             }
         }
@@ -477,18 +488,18 @@ namespace Chaos.src.Ethena
         {
             // mapping integer representative to the partition size. 
             IDictionary<int, int> ComponentSizes = new SortedDictionary<int, int>();
-            
+
             // Disjoint set for kruskal.
             IDisjointSet<Point> ds = new ArrayDisjointSet<Point>();
-            
+
             SortedSet<Edge> ChosenEdges = new SortedSet<Edge>();
-            
+
             // Maping Component's rerepsentative to partitions of type PointCollection. 
             SortedDictionary<int, PointCollection> Partitions = new SortedDictionary<int, PointCollection>();
-            
+
             // A set of set of points, each represents all vertices that are in the same component. 
             SortedSet<PointCollection> ClustersSet = new SortedSet<PointCollection>();
-            
+
             for (int I = 0; I < Idx_V.Count; I++)
             {
                 ds.CreateSet(Idx_V[I]);
@@ -497,7 +508,7 @@ namespace Chaos.src.Ethena
                 Partitions[I] = pc;
                 ClustersSet.Add(pc);
             }
-            
+
             foreach (Edge e in E)
             {
                 Point u = e.a, v = e.b;
@@ -519,16 +530,14 @@ namespace Chaos.src.Ethena
         }
     }
 
-   
-
     /// <summary>
     ///     * Should not accept fewer than 5 points, that is just too small to determine. 
     /// </summary>
     [Obsolete("Tooo stupid to use")]
     public class FullGraphClustering : FullGraph
     {
-        public Point Centroid1 { get; protected set;}
-        public Point Centroid2 { get; protected set;}
+        public Point Centroid1 { get; protected set; }
+        public Point Centroid2 { get; protected set; }
         protected ISet<Point> TopCluster1;
         protected ISet<Point> TopCluters2;
         // A sorted set of collections of points. 
@@ -543,14 +552,17 @@ namespace Chaos.src.Ethena
 
         virtual public IImmutableSet<PointCollection> Clusters
         {
-            get {
+            get
+            {
                 return Basic.ImmuteSet<PointCollection>(EvolvingClusters);
             }
         }
 
-        virtual public IImmutableSet<Point> ClusterMajor {
-            get {
-                return Basic.ImmuteSet<Point>(IdentifiedCluster1); 
+        virtual public IImmutableSet<Point> ClusterMajor
+        {
+            get
+            {
+                return Basic.ImmuteSet<Point>(IdentifiedCluster1);
             }
         }
 
@@ -562,7 +574,7 @@ namespace Chaos.src.Ethena
             }
         }
 
-        public FullGraphClustering(Point[] points): base(points)
+        public FullGraphClustering(Point[] points) : base(points)
         {
             if (points.Length <= 4) throw new Exception("too small to cluster. ");
             EvolvingClusters = KrusktalAagain();
@@ -582,7 +594,7 @@ namespace Chaos.src.Ethena
             Centroid1 = Point.CentroidOf(MaxClusters.ToArray());
             EvolvingClusters.Remove(EvolvingClusters.Max);
             Centroid2 = Point.CentroidOf(EvolvingClusters.Max.ToArray());
-            EvolvingClusters.Add(MaxClusters); 
+            EvolvingClusters.Add(MaxClusters);
         }
 
         /// <summary>
@@ -590,14 +602,14 @@ namespace Chaos.src.Ethena
         /// </summary>
         protected virtual void ClassifyByCentroid()
         {
-            ISet<Point> C1 = new HashSet<Point>(), C2 = new HashSet<Point>(); 
-            foreach(Point v in V.Values)
+            ISet<Point> C1 = new HashSet<Point>(), C2 = new HashSet<Point>();
+            foreach (Point v in V.Values)
             {
                 if (Point.Dis(v, Centroid1) <= Point.Dis(v, Centroid2))
                 {
                     C1.Add(v);
                 }
-                else C2.Add(v); 
+                else C2.Add(v);
             }
             IdentifiedCluster1 = C1;
             IdentifiedCluster2 = C2;
@@ -627,18 +639,18 @@ namespace Chaos.src.Ethena
                 Point v = e.a, u = e.b;
                 if (ChosenE.Contains(e))
                 {
-                    PointCollection P1 = Partitions[ds.FindSet(v) - 1], P2 =  Partitions[ds.FindSet(u) - 1];
+                    PointCollection P1 = Partitions[ds.FindSet(v) - 1], P2 = Partitions[ds.FindSet(u) - 1];
                     PointCollection JoinedPartition = P1 + P2;
                     ds.Join(v, u);
                     Partitions[ds.FindSet(u) - 1] = JoinedPartition;
                     ClustersSet.Remove(P1);
                     ClustersSet.Remove(P2);
-                    ClustersSet.Add(JoinedPartition); 
+                    ClustersSet.Add(JoinedPartition);
                 }
                 if (--TerminateIndex == 1) break; // Gives it some room. 
             }
 
-            return ClustersSet; 
+            return ClustersSet;
         }
     }
 }

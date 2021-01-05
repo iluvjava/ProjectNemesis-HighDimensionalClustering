@@ -3,9 +3,9 @@ using System;
 using System.Collections.Generic;
 using System.Runtime;
 using System.Text;
-using static Chaos.src.Util.Basic;
+using static TheBase.src.Util.Basic;
 
-namespace Chaos.src.Util
+namespace TheBase.src.Util
 {
     /// <summary>
     ///     Given a string, the function will return a transition matrix 
@@ -38,8 +38,10 @@ namespace Chaos.src.Util
     /// </summary>
     public static class SettingsManager
     {
+
+        // Default settings until modified. 
         public static MatrixMetric MtxMetric = MatrixMetric.TwoNorm;
-        public static MatrixType MtxType = MatrixType.Tm27;
+        public static MatrixType MtxType = MatrixType.Tm27; 
         public static bool FileSearchRecursive = true;
 
         /// <summary>
@@ -70,6 +72,11 @@ namespace Chaos.src.Util
             MtxMetric = MatrixMetric.VecOneNorm;
         }
 
+        public static void setDisFxnToCosine()
+        {
+            MtxMetric = MatrixMetric.Consine;
+        }
+
         public static MatrixGenFxn DisPatchMatrixGenFxn()
         {
             switch (MtxType)
@@ -91,10 +98,8 @@ namespace Chaos.src.Util
                     return handler;
                 }
             }
-
             throw new Exception("This shouldn't happen, please go check source codes.");
         }
-
 
         public static MatrixDisFxn DispatchMatrixDisFxn()
         {
@@ -118,14 +123,15 @@ namespace Chaos.src.Util
                 }
                 case MatrixMetric.Consine:
                 {
-                    throw new NotImplementedException(); // TODO: Implement this. 
+                    MatrixDisFxn Handler = delegate (double[,] a, double[,] b)
+                    {
+                            return MatrixConsineDistance(a, b); 
+                    };
+                    return Handler;
                 }
             }
-
             throw new Exception("This shouldn't happen, please go check source codes.");
         }
-
-
     }
 
 

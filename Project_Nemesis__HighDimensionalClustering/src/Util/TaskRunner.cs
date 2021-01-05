@@ -21,7 +21,6 @@ namespace TaskRunners
         void AddResult(T result);
         Task<T> GetTask();
         void AddTask(Task<T> t);
-
         Queue<T> GetResult();
     }
 

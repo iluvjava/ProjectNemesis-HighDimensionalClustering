@@ -1,5 +1,5 @@
-﻿using Chaos.src.Ethena;
-using Chaos.src.Util;
+﻿using TheBase.src.Core;
+using TheBase.src.Util;
 using Project_Nemesis__HighDimensionalClustering.src.Util;
 using System;
 using System.Collections.Generic;
@@ -12,7 +12,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using static System.Console;
 
-namespace Chaos
+namespace TheBase
 {
     /// <summary>
     ///     Things to establish: 

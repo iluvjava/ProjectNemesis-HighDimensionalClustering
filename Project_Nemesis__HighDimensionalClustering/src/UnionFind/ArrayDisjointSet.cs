@@ -15,10 +15,12 @@ namespace MyDatastructure.UnionFind
         /// The object and their perspective index in the array. 
         /// </summary>
         protected IMap<T, int> IndexMap;
+
         /// <summary>
         /// Storing the forest reverse tree, index 0 is dummy. 
         /// </summary>
         protected int[] Forest; // more than one inverse tree. index 0 is a dummy. 
+        
         /// <summary>
         /// Total number of elements. 
         /// </summary>
